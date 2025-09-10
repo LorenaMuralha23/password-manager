@@ -66,6 +66,7 @@
     </dependencies>
 
     <build>
+        <finalName>chaincode</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -82,15 +83,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.5.5</version> <!-- mesma versão do Spring Boot -->
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal> <!-- cria o JAR executável -->
-                            <goal>run</goal>       <!-- permite rodar com spring-boot:run -->
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <excludes>
                         <exclude>
