@@ -17,17 +17,10 @@ public class PasswordReference {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nickname;
+    @Column(name = "encrypted_data", columnDefinition = "CLOB")
+    private String encryptedData;
 
-    @Column(name = "blockchain_reference_1")
-    private String blockchainReference1;
-
-    @Column(name = "blockchain_reference_2")
-    private String blockchainReference2;
-
-    @Column(name = "fragmentation_reference")
-    private String fragmentationReference;
-
+    // Relacionamento ainda precisa existir em claro para integridade do banco
     @ManyToOne
     @JoinColumn(name = "user_id")
     private AppUser user;
@@ -35,12 +28,10 @@ public class PasswordReference {
     public PasswordReference() {
     }
 
-    public PasswordReference(Long id, String nickname, String blockchain_reference_1, String blockchain_reference_2, String fragmentation_reference) {
+    public PasswordReference(Long id, String encryptedData, AppUser user) {
         this.id = id;
-        this.nickname = nickname;
-        this.blockchainReference1 = blockchain_reference_1;
-        this.blockchainReference2 = blockchain_reference_2;
-        this.fragmentationReference = fragmentation_reference;
+        this.encryptedData = encryptedData;
+        this.user = user;
     }
 
     public Long getId() {
@@ -51,36 +42,12 @@ public class PasswordReference {
         this.id = id;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getEncryptedData() {
+        return encryptedData;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getBlockchainReference1() {
-        return blockchainReference1;
-    }
-
-    public void setBlockchainReference1(String blockchainReference1) {
-        this.blockchainReference1 = blockchainReference1;
-    }
-
-    public String getBlockchainReference2() {
-        return blockchainReference2;
-    }
-
-    public void setBlockchainReference2(String blockchainReference2) {
-        this.blockchainReference2 = blockchainReference2;
-    }
-
-    public String getFragmentationReference() {
-        return fragmentationReference;
-    }
-
-    public void setFragmentationReference(String fragmentationReference) {
-        this.fragmentationReference = fragmentationReference;
+    public void setEncryptedData(String encryptedData) {
+        this.encryptedData = encryptedData;
     }
 
     public AppUser getUser() {
