@@ -14,23 +14,15 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "mfa_secret")
-    private String mfaSecret;
-
-    @Column(name = "symmetric_key")
-    private String symmetricKey;
-
-    @Column(name = "sm_key_hash")
-    private String smKeyHash;
+    @Column(name = "encrypted_data", columnDefinition = "CLOB")
+    private String encryptedData;
 
     public AppUser() {
     }
 
-    public AppUser(Long id, String mfaSecret, String symmetricKey, String smKeyHash) {
+    public AppUser(Long id, String encryptedData) {
         this.id = id;
-        this.mfaSecret = mfaSecret;
-        this.symmetricKey = symmetricKey;
-        this.smKeyHash = smKeyHash;
+        this.encryptedData = encryptedData;
     }
 
     public Long getId() {
@@ -41,28 +33,12 @@ public class AppUser {
         this.id = id;
     }
 
-    public String getMfaSecret() {
-        return mfaSecret;
+    public String getEncryptedData() {
+        return encryptedData;
     }
 
-    public void setMfaSecret(String mfaSecret) {
-        this.mfaSecret = mfaSecret;
+    public void setEncryptedData(String encryptedData) {
+        this.encryptedData = encryptedData;
     }
-
-    public String getSymmetricKey() {
-        return symmetricKey;
-    }
-
-    public void setSymmetricKey(String symmetricKey) {
-        this.symmetricKey = symmetricKey;
-    }
-
-    public String getSmKeyHash() {
-        return smKeyHash;
-    }
-
-    public void setSmKeyHash(String smKeyHash) {
-        this.smKeyHash = smKeyHash;
-    }
-
+    
 }
