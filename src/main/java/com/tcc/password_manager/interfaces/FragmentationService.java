@@ -36,8 +36,6 @@ public class FragmentationService {
         String frament2 = reorganizedPassword.substring(newCutPoint, reorganizedPassword.length());
         FragmentedData fragmentationMap = new FragmentedData(fragment1, frament2, shuffledCutpoints);
 
-        String original = joinPassword(reorganizedPassword, shuffledCutpoints);
-
         return fragmentationMap;
     }
 
@@ -48,20 +46,14 @@ public class FragmentationService {
         int start = 0;
 
         while (start < password.length()) {
-            // sorteia um tamanho de corte válido para o que resta da senha
             int remaining = password.length() - start;
             int cut = getRandomCutPoint(remaining);
-
-            // se o corte ultrapassar o fim, ajusta
             int end = Math.min(start + cut, password.length());
 
-            // adiciona o fragmento cortado
             passwordFragments.add(password.substring(start, end));
 
-            // salva o tamanho do corte
             this.originalCutPoints.add(end - start);
 
-            // avança
             start = end;
         }
 
@@ -82,9 +74,9 @@ public class FragmentationService {
 
     public int getRandomCutPoint(int max) {
         if (max <= 1) {
-            max += 2;
+            max = 2;
         }
-        // Garante um valor entre 1 e max-1
+
         return 1 + secureRandom.nextInt(max - 1);
     }
 
@@ -111,7 +103,7 @@ public class FragmentationService {
         for (ShuffleMap map : newCutPoints) {
             int end = start + map.getValue();
             if (end > shuffledPassword.length()) {
-                end = shuffledPassword.length(); // segurança
+                end = shuffledPassword.length();
             }
             fragments.add(shuffledPassword.substring(start, end));
             start = end;
