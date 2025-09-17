@@ -40,10 +40,22 @@ public class AppUserService {
     }
 
     /**
-     * Realiza o registro de um novo usuário: - Gera a UMK (User Master Key). -
-     * Deriva a chave da senha mestre do usuário (passwordKey). - Faz wrap da
-     * UMK com a passwordKey (AES-GCM). - Gera hash da UMK (para validação). -
-     * Monta DTO em claro. - Cifra DTO com a própria UMK e salva no banco.
+     * Realiza o registro de um novo usuário:
+     *
+     * 1. Gera uma nova UMK (User Master Key), chave AES-256 aleatória exclusiva
+     * do usuário. 2. Deriva a passwordKey a partir da senha mestre informada
+     * pelo usuário. (atualmente derivação simples → no futuro substituir por
+     * PBKDF2/Argon2). 3. Usa a passwordKey para cifrar a UMK (wrap da UMK) em
+     * modo AES-GCM. O resultado (EncryptedPayload em JSON) é armazenado em
+     * umkWrapped. 4. Calcula o hash da UMK em claro e armazena em umkHash. Esse
+     * valor será usado no login para validar se a UMK foi recuperada
+     * corretamente. 5. Monta um DTO em claro (AppUserClearData) contendo
+     * mfaSecret, umkWrapped e umkHash. 6. Cifra esse DTO com a própria UMK,
+     * gerando o campo encryptedData. Esse campo contém as informações do
+     * usuário em formato seguro. 7. Persiste no banco a entidade AppUser com: -
+     * encryptedData (DTO cifrado com a UMK) - umkWrapped (UMK cifrada com a
+     * senha do usuário) - umkHash (hash da UMK em claro, para validação
+     * futura).
      */
     public AppUser registerUser(String masterKey, String mfaSecret) {
         // 1. Gera UMK
@@ -70,8 +82,50 @@ public class AppUserService {
         String encryptedData = jsonEncService.encryptDto(userDto, umk, null, AppUserClearData.class);
 
         // 7. Salva entidade
-        AppUser entity = new AppUser(null, encryptedData);
+        AppUser entity = new AppUser();
+        entity.setEncryptedData(encryptedData);
+        entity.setUmkWrapped(umkWrappedJson);
+        entity.setUmkHash(umkHash);
         return userRepository.save(entity);
+    }
+
+    /**
+     * Realiza o login do usuário: 1. Recupera a entidade do banco pelo userId.
+     * 2. Deriva a chave simétrica (passwordKey) a partir da senha mestre
+     * informada. 3. Usa a passwordKey para decifrar o umkWrapped armazenado →
+     * obtém a UMK real. 4. Calcula o hash da UMK e compara com o umkHash salvo
+     * no banco. - Se não coincidir, a senha está incorreta ou os dados foram
+     * adulterados. 5. Se coincidir, usa a UMK para decifrar o encryptedData do
+     * usuário. 6. Retorna o DTO em claro (AppUserClearData).
+     */
+    public AppUserClearData login(Long userId, String masterKey) {
+        // 1. Recupera entity
+        AppUser entity = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        // 2. Deriva passwordKey a partir da senha do usuário
+        SecretKeySpec passwordKey = passwordKeyDerivation.deriveKey(masterKey);
+
+        // 3. Faz o unwrap da UMK com a passwordKey
+        EncryptedPayload umkPayload = cryptoService.fromJson(entity.getUmkWrapped());
+        byte[] umk = cryptoService.decrypt(passwordKey.getEncoded(), umkPayload, null);
+
+        // 4. Valida hash da UMK
+        String recoveredHash = hashService.hashToBase64(umk);
+        if (!recoveredHash.equals(entity.getUmkHash())) {
+            throw new RuntimeException("Senha incorreta ou dados adulterados!");
+        }
+
+        // 5. Decifra os dados do usuário com a UMK
+        AppUserClearData clearData = jsonEncService.decryptToDto(
+                entity.getEncryptedData(),
+                umk,
+                null,
+                AppUserClearData.class
+        );
+
+        // 6. Retorna o DTO em claro
+        return clearData;
     }
 
     /**

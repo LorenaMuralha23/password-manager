@@ -1,6 +1,7 @@
 package com.tcc.password_manager.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tcc.password_manager.dto.AppUserClearData;
 import com.tcc.password_manager.model.AppUser;
 import com.tcc.password_manager.service.AppUserService;
 import org.springframework.boot.CommandLineRunner;
@@ -22,12 +23,18 @@ public class DataInitializer {
 
             AppUser user = appUserService.registerUser(senhaMestre, mfaSecret);
 
+            System.out.println("=== Cadastro ===");
             System.out.println("Entity salva no banco (User): " + user.getEncryptedData());
+            System.out.println("umkWrapped salvo: " + user.getUmkWrapped());
+            System.out.println("umkHash salvo: " + user.getUmkHash());
 
-            // === Recuperar DTO interno para validação ===
-            // Obs: aqui precisaríamos do fluxo de login para recuperar a UMK.
-            // Por enquanto vamos só confirmar que a entity foi criada.
-            System.out.println("Usuário de teste inicializado com dados cifrados!");
+            // === Simulando login ===
+            AppUserClearData clearData = appUserService.login(user.getId(), senhaMestre);
+
+            System.out.println("\n=== Login ===");
+            System.out.println("DTO decifrado (User): " + mapper.writeValueAsString(clearData));
+
+            System.out.println("\nUsuário de teste inicializado, cifrado no cadastro e validado no login!");
         };
     }
 }
