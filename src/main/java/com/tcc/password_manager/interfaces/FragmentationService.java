@@ -17,24 +17,11 @@ public class FragmentationService {
     private static final SecureRandom secureRandom = new SecureRandom();
 
     private ArrayList<Integer> originalCutPoints = new ArrayList<>();
-    //7GtXmccDUSZI/7BXAy03/Q==H -> 25
-    //[4, 6, 19 (25-6)]
 
-    //7G tXmcc D USZI /7BXAy 03/Q==H
-    //0 - 8    8 - 16   16 - 8
-    //sortear quantas partes quebrar <- armazenar -> 4
-    //quebrar a string no número de fragmentos necessários (nesse caso, 24/3 -> arredonda para baixo, se for o caso -> 6
-    //sorteia o cutpoint (n-1) -> ) <- armazenar ordem original [2, 5, 1, 4, 6]
-    //embaralha os fragmentos -> [] <- armazenar nova ordem [4, 6, 2, 5, 1]
-    //unir a senha nessa nova ordem USZI 03/Q <-> ==H tXmcc /7BXAy 7G
-    //sortear um número para cortar a senha novamente - 8
-    // retorna os dois fragmentos
     public FragmentedData fragmentPassword(String password) {
         int cutNumber = getRandomCutPoint(password.length());
         double fragmentsNumber = Math.floor(password.length() - cutNumber);
         ArrayList<Integer> cutPoints = new ArrayList<>();
-
-        ArrayList<Integer> numeros = new ArrayList<>(Arrays.asList(3, 2, 9, 5, 8));
 
         for (int i = 0; i < fragmentsNumber; i++) {
             cutPoints.add(getRandomCutPoint((int) fragmentsNumber));
@@ -48,22 +35,34 @@ public class FragmentationService {
         String fragment1 = reorganizedPassword.substring(0, newCutPoint);
         String frament2 = reorganizedPassword.substring(newCutPoint, reorganizedPassword.length());
         FragmentedData fragmentationMap = new FragmentedData(fragment1, frament2, shuffledCutpoints);
-        
+
+        String original = joinPassword(reorganizedPassword, shuffledCutpoints);
+
         return fragmentationMap;
     }
 
     public ArrayList<String> breakPassword(String password, ArrayList<Integer> cutPoints) {
         ArrayList<String> passwordFragments = new ArrayList<>();
+        this.originalCutPoints.clear(); // garante que começa vazio
+
         int start = 0;
-        for (int i = 0; i < cutPoints.size(); i++) {
-            if ((start + cutPoints.get(i)) > password.length()) {
-                passwordFragments.add(password.substring(start, password.length()));
-                break;
-            } else {
-                passwordFragments.add(password.substring(start, start + cutPoints.get(i)));
-                start += cutPoints.get(i);
-            }
-            this.originalCutPoints.add(cutPoints.get(i));
+
+        while (start < password.length()) {
+            // sorteia um tamanho de corte válido para o que resta da senha
+            int remaining = password.length() - start;
+            int cut = getRandomCutPoint(remaining);
+
+            // se o corte ultrapassar o fim, ajusta
+            int end = Math.min(start + cut, password.length());
+
+            // adiciona o fragmento cortado
+            passwordFragments.add(password.substring(start, end));
+
+            // salva o tamanho do corte
+            this.originalCutPoints.add(end - start);
+
+            // avança
+            start = end;
         }
 
         return passwordFragments;
@@ -83,7 +82,7 @@ public class FragmentationService {
 
     public int getRandomCutPoint(int max) {
         if (max <= 1) {
-            throw new IllegalArgumentException("O tamanho deve ser maior que 1 para permitir corte.");
+            max += 2;
         }
         // Garante um valor entre 1 e max-1
         return 1 + secureRandom.nextInt(max - 1);
@@ -105,16 +104,33 @@ public class FragmentationService {
         return password.toString();
     }
 
-//    public FragmentedData breakPassword(String password){ 
-//        int cutPoint = getRandomCutPoint(password.length()); 
-//        String fragment1 = password.substring(0, cutPoint);
-//        String fragment2 = password.substring(cutPoint, password.length());
-//        
-//        FragmentedData fragmentedData = new FragmentedData();
-//        fragmentedData.setCutPoint(cutPoint);
-//        fragmentedData.setFragment1(fragment1);
-//        fragmentedData.setFragment2(fragment2);
-//        
-//        return fragmentedData;
-//    }
+    public String joinPassword(String shuffledPassword, ArrayList<ShuffleMap> newCutPoints) {
+        ArrayList<String> fragments = new ArrayList<>();
+
+        int start = 0;
+        for (ShuffleMap map : newCutPoints) {
+            int end = start + map.getValue();
+            if (end > shuffledPassword.length()) {
+                end = shuffledPassword.length(); // segurança
+            }
+            fragments.add(shuffledPassword.substring(start, end));
+            start = end;
+        }
+
+        ArrayList<String> orderedFragments = new ArrayList<>(Collections.nCopies(fragments.size(), ""));
+        for (int i = 0; i < newCutPoints.size(); i++) {
+            ShuffleMap map = newCutPoints.get(i);
+            orderedFragments.set(map.getOriginalIndex(), fragments.get(i));
+        }
+
+        StringBuilder password = new StringBuilder();
+        for (String fragment : orderedFragments) {
+            password.append(fragment);
+        }
+
+        String originalPassoword = password.toString();
+
+        return password.toString();
+    }
+
 }
