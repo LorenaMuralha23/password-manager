@@ -13,13 +13,7 @@ public class PasswordManagerApplication {
     
     public static void main(String[] args) {
         SpringApplication.run(PasswordManagerApplication.class, args);
-        menu.showMenuOnStart();
     }
-    
-    public static void teste(){
-        FragmentationService service = new FragmentationService();
-        String password = "7GtXmccDUSZI/7BXAy03/Q==";
-        FragmentedData frgData = service.fragmentPassword(password);
-    }
+   
 
 }
