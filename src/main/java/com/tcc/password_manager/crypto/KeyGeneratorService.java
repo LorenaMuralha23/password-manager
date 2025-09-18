@@ -2,6 +2,7 @@ package com.tcc.password_manager.crypto;
 
 import java.security.SecureRandom;
 import java.util.Base64;
+import org.springframework.stereotype.Service;
 
 /**
  * Serviço responsável por gerar chaves simétricas (AES-256) de forma segura.
@@ -21,6 +22,7 @@ import java.util.Base64;
  * antes de ser persistida.</p>
  */
 
+@Service
 public class KeyGeneratorService {
     private static final int AES_KEY_SIZE_BYTES = 32; // 256 bits
     private final SecureRandom secureRandom = new SecureRandom();

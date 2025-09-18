@@ -3,11 +3,13 @@ package com.tcc.password_manager.crypto;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import javax.crypto.spec.SecretKeySpec;
+import org.springframework.stereotype.Service;
 
 /**
  * Classe simples para derivar uma chave AES-256 a partir da senha do usuário.
  * (No futuro, substituir por PBKDF2/Argon2.)
  */
+@Service
 public class PasswordKeyDerivation {
 
     public SecretKeySpec deriveKey(String password) {
