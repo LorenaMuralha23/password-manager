@@ -1,6 +1,6 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+     * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+     * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.tcc.password_manager.test;
 
@@ -22,34 +22,33 @@ public class BlockchainConnectionTest implements CommandLineRunner {
     @Override
     public void run(String... args) {
         try {
-            System.out.println("\n=== 🔗 Teste de Conexão com Blockchain ===");
+            System.out.println("\n=== 🔗 Teste de Comunicação com Duas Blockchains ===");
 
-            // 🔐 Dados de teste
-            String channel = "mychannel";                // Canal ativo
-            String chaincode = "passwordmanager";         // Nome do chaincode
-            String identity = "appUser";                  // Identidade registrada no wallet
-            String key = "user123_google";                // Chave única
-            String encryptedPassword = "ENC_TEST_123456"; // Senha fictícia
+            // 🔐 Dados de teste simulados
+            String id = "user123_google";          // Identificador lógico (por exemplo, hash da credencial)
+            String fragmentOrg1 = "ENC_FRAG_ORG1_ABC123";
+            String fragmentOrg2 = "ENC_FRAG_ORG2_DEF456";
 
-            // 🧱 1. Grava a senha
-            System.out.println("\n➡️ Gravando senha no ledger...");
-            blockchainService.invoke(channel, chaincode, "savePassword", identity, key, encryptedPassword);
-            System.out.println("✅ Senha gravada com sucesso!");
+            // 🧱 1️⃣ Grava fragmentos nas duas blockchains
+            System.out.println("\n➡️ Gravando fragmentos nas blockchains...");
+            blockchainService.storeFragments(id, fragmentOrg1, fragmentOrg2);
+            System.out.println("✅ Fragmentos gravados com sucesso!");
 
-            // 🔍 2. Consulta a senha
-            System.out.println("\n➡️ Consultando senha do ledger...");
-            String storedPassword = blockchainService.query(channel, chaincode, "getPassword", identity, key);
-            System.out.println("🔐 Senha criptografada recuperada: " + storedPassword);
+            // 🔍 2️⃣ Recupera os fragmentos armazenados
+            System.out.println("\n➡️ Recuperando fragmentos das blockchains...");
+            String[] fragments = blockchainService.retrieveFragments(id);
+            System.out.println("🔐 Fragmento Org1 recuperado: " + fragments[0]);
+            System.out.println("🔐 Fragmento Org2 recuperado: " + fragments[1]);
 
-            // 🧹 3. Limpa o teste (opcional)
-            System.out.println("\n➡️ Removendo senha de teste...");
-            blockchainService.invoke(channel, chaincode, "deletePassword", identity, key);
-            System.out.println("🧹 Senha de teste removida do ledger.");
+            // 🧹 3️⃣ Remove os fragmentos (limpeza do teste)
+            System.out.println("\n➡️ Removendo fragmentos de teste das blockchains...");
+            blockchainService.deleteFragments(id);
+            System.out.println("🧹 Fragmentos removidos com sucesso!");
 
             System.out.println("\n=== ✅ Teste finalizado com sucesso ===\n");
 
         } catch (Exception e) {
-            System.err.println("\n❌ Erro durante o teste de conexão com a blockchain:");
+            System.err.println("\n❌ Erro durante o teste de comunicação com as blockchains:");
             e.printStackTrace();
         }
     }

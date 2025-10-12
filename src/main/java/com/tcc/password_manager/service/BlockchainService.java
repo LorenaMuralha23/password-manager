@@ -16,22 +16,70 @@ import org.springframework.stereotype.Service;
 @Service
 public class BlockchainService {
 
-    private final FabricConnector fabricConnector;
+    
+    private final FabricConnector connector;
 
-    @Autowired
-    public BlockchainService(FabricConnector fabricConnector) {
-        this.fabricConnector = fabricConnector;
+    public BlockchainService() throws Exception {
+        this.connector = new FabricConnector();
     }
 
-    public String query(String channel, String chaincode, String function, String identity, String... args) throws Exception {
-        Contract contract = fabricConnector.getContract(channel, chaincode, identity);
-        byte[] result = contract.evaluateTransaction(function, args);
-        return new String(result);
+    /**
+     * Grava dois fragmentos — um em cada blockchain (Org1 e Org2).
+     *
+     * @param id Identificador lógico do segredo (ex: hash ou UUID)
+     * @param fragment1 Fragmento criptografado destinado à Org1
+     * @param fragment2 Fragmento criptografado destinado à Org2
+     */
+    public void storeFragments(String id, String fragment1, String fragment2) throws Exception {
+        // === Org1 ===
+        Contract contractOrg1 = connector.getContract("org1", "passwordmanager");
+        System.out.println("📤 Gravando fragmento 1 na blockchain Org1...");
+        contractOrg1.submitTransaction("savePassword", id, fragment1);
+
+        // === Org2 ===
+        Contract contractOrg2 = connector.getContract("org2", "passwordmanager");
+        System.out.println("📤 Gravando fragmento 2 na blockchain Org2...");
+        contractOrg2.submitTransaction("savePassword", id, fragment2);
+
+        System.out.println("✅ Fragmentos gravados com sucesso em ambas as blockchains!");
     }
 
-    public String invoke(String channel, String chaincode, String function, String identity, String... args) throws Exception {
-        Contract contract = fabricConnector.getContract(channel, chaincode, identity);
-        byte[] result = contract.submitTransaction(function, args);
-        return new String(result);
+    /**
+     * Recupera os fragmentos armazenados nas duas blockchains.
+     *
+     * @param id Identificador lógico do segredo (mesmo usado no storeFragments)
+     * @return Array contendo [fragmentOrg1, fragmentOrg2]
+     */
+    public String[] retrieveFragments(String id) throws Exception {
+        System.out.println("📥 Recuperando fragmentos das blockchains...");
+
+        Contract contractOrg1 = connector.getContract("org1", "passwordmanager");
+        Contract contractOrg2 = connector.getContract("org2", "passwordmanager");
+
+        byte[] response1 = contractOrg1.evaluateTransaction("getPassword", id);
+        byte[] response2 = contractOrg2.evaluateTransaction("getPassword", id);
+
+        String fragment1 = new String(response1);
+        String fragment2 = new String(response2);
+
+        System.out.println("✅ Fragmentos recuperados com sucesso!");
+        return new String[]{fragment1, fragment2};
+    }
+
+    /**
+     * Remove os fragmentos associados ao ID informado em ambas as blockchains.
+     *
+     * @param id Identificador lógico do segredo
+     */
+    public void deleteFragments(String id) throws Exception {
+        System.out.println("❌ Removendo fragmentos das blockchains...");
+
+        Contract contractOrg1 = connector.getContract("org1", "passwordmanager");
+        Contract contractOrg2 = connector.getContract("org2", "passwordmanager");
+
+        contractOrg1.submitTransaction("deletePassword", id);
+        contractOrg2.submitTransaction("deletePassword", id);
+
+        System.out.println("✅ Fragmentos removidos com sucesso!");
     }
 }
