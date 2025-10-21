@@ -19,6 +19,8 @@ public class ShuffleMap {
         this.originalIndex = originalIndex;
         this.value = value;
     }
-    
+
+    public ShuffleMap() {
+    }
     
 }
