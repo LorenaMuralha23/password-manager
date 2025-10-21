@@ -1,4 +1,4 @@
-package com.tcc.password_manager.interfaces;
+package com.tcc.password_manager.service;
 
 import com.tcc.password_manager.classes.ShuffleMap;
 import com.tcc.password_manager.dto.FragmentedData;
@@ -7,11 +7,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import org.hibernate.mapping.Collection;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Lolo
  */
+
+@Service
 public class FragmentationService {
 
     private static final SecureRandom secureRandom = new SecureRandom();
