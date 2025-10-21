@@ -2,6 +2,7 @@ package com.tcc.password_manager.crypto;
 
 import java.security.SecureRandom;
 import java.util.Base64;
+import org.springframework.stereotype.Service;
 
 /**
  * Serviço responsável por gerar vetores de inicialização (IVs) para AES-GCM.
@@ -14,6 +15,7 @@ import java.util.Base64;
  * compromete a segurança do esquema.</p>
  */
 
+@Service
 public class IVGeneratorService {
     
     private static final int GCM_IV_SIZE_BYTES = 12; // 96 bits (padrão para GCM)

@@ -1,15 +1,13 @@
 package com.tcc.password_manager.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tcc.password_manager.crypto.HashService;
-import com.tcc.password_manager.crypto.KeyGeneratorService;
+import com.tcc.password_manager.controller.PasswordManagerController;
 import com.tcc.password_manager.dto.AppUserClearData;
 import com.tcc.password_manager.dto.PasswordReferenceClearData;
 import com.tcc.password_manager.model.AppUser;
 import com.tcc.password_manager.model.PasswordReference;
 import com.tcc.password_manager.service.AppUserService;
-import com.tcc.password_manager.service.PasswordReferenceService;
-import java.util.Base64;
+import java.util.List;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,65 +16,69 @@ import org.springframework.context.annotation.Configuration;
 public class DataInitializer {
 
     @Bean
-    CommandLineRunner initDatabase(AppUserService appUserService,
-            PasswordReferenceService passwordReferenceService) {
+    CommandLineRunner initDatabase(PasswordManagerController controller) {
 
         return args -> {
-            // Serviços utilitários
-            KeyGeneratorService keyGen = new KeyGeneratorService();
-            HashService hashService = new HashService();
             ObjectMapper mapper = new ObjectMapper();
 
-            // === Criando usuário 1 ===
-            byte[] umkUser1 = keyGen.generateKey(); // chave AES-256 do user1
-            String umkHash = hashService.hashToBase64(umkUser1);
+            // === Cadastro de usuário ===
+            String senhaMestre = "senha123";
+            String mfaSecret = "mfa1";
 
-            AppUserClearData user1Dto = new AppUserClearData(
-                    "mfa1",
-                    Base64.getEncoder().encodeToString(umkUser1), // simulação do wrapped
-                    umkHash
-            );
+            AppUser user = controller.registerUser(senhaMestre, mfaSecret);
+            System.out.println("=== Cadastro ===");
+            System.out.println("User ID: " + user.getId());
+            System.out.println("EncryptedData: " + user.getEncryptedData());
+            System.out.println("umkWrapped: " + user.getUmkWrapped());
+            System.out.println("umkHash: " + user.getUmkHash());
 
-            System.out.println("DTO em claro (User1): " + mapper.writeValueAsString(user1Dto));
+            // === Login ===
+            try {
+                controller.login(user.getId(), senhaMestre);
+                System.out.println("\n=== Login bem-sucedido ===");
+            } catch (Exception e) {
+                System.err.println("Falha no login: " + e.getMessage());
+                return;
+            }
 
-            AppUser user1 = appUserService.save(user1Dto, umkUser1);
+            // === Adicionar senha (mock blockchain refs) ===
+            try {
+                PasswordReference saved = controller.addPassword("GitHub");
+                System.out.println("\n=== Senha cadastrada ===");
+                System.out.println("PasswordReference ID: " + saved.getId());
+                System.out.println("EncryptedData: " + saved.getEncryptedData());
+            } catch (Exception e) {
+                System.err.println("Falha ao adicionar senha: " + e.getMessage());
+            }
 
-            System.out.println("Entity salva no banco (User1): " + user1.getEncryptedData());
+            // === Listar senhas ===
+            try {
+                List<PasswordReference> all = controller.listPasswords();
+                System.out.println("\n=== Lista de senhas ===");
+                all.forEach(ref
+                        -> System.out.println("ID: " + ref.getId() + " | Data (encrypted): " + ref.getEncryptedData()));
+            } catch (Exception e) {
+                System.err.println("Falha ao listar senhas: " + e.getMessage());
+            }
 
-            // Decifrando para validar
-            AppUserClearData user1Decrypted
-                    = appUserService.decryptToDto(user1.getEncryptedData(), umkUser1);
-            System.out.println("DTO decifrado (User1): " + mapper.writeValueAsString(user1Decrypted));
+            // === Recuperar senha (metadados decifrados) ===
+            try {
+                List<PasswordReference> all = controller.listPasswords();
+                if (!all.isEmpty()) {
+                    Long refId = all.get(0).getId();
+                    PasswordReferenceClearData clear = controller.retrievePassword(refId);
+                    System.out.println("\n=== Recuperação de senha ===");
+                    System.out.println("DTO decifrado: " + mapper.writeValueAsString(clear));
+                }
+            } catch (Exception e) {
+                System.err.println("Falha ao recuperar senha: " + e.getMessage());
+            }
 
-            // === Criando senha vinculada ao user1 ===
-            PasswordReferenceClearData ref1Dto = new PasswordReferenceClearData(
-                    "Email", "bcRef1", "bcRef2", "frag1"
-            );
-            System.out.println("DTO em claro (PasswordRef1): " + mapper.writeValueAsString(ref1Dto));
+            // === Logout ===
+            controller.logout();
+            System.out.println("\n=== Logout realizado ===");
 
-            PasswordReference ref1 = passwordReferenceService.save(ref1Dto, user1, umkUser1);
-
-            System.out.println("Entity salva no banco (PasswordRef1): " + ref1.getEncryptedData());
-
-            PasswordReferenceClearData ref1Decrypted
-                    = passwordReferenceService.decryptToDto(ref1.getEncryptedData(), umkUser1);
-            System.out.println("DTO decifrado (PasswordRef1): " + mapper.writeValueAsString(ref1Decrypted));
-
-            // === Criando outra senha vinculada ao user1 ===
-            PasswordReferenceClearData ref2Dto = new PasswordReferenceClearData(
-                    "Banco", "bcRef3", "bcRef4", "frag2"
-            );
-            System.out.println("DTO em claro (PasswordRef2): " + mapper.writeValueAsString(ref2Dto));
-
-            PasswordReference ref2 = passwordReferenceService.save(ref2Dto, user1, umkUser1);
-
-            System.out.println("Entity salva no banco (PasswordRef2): " + ref2.getEncryptedData());
-
-            PasswordReferenceClearData ref2Decrypted
-                    = passwordReferenceService.decryptToDto(ref2.getEncryptedData(), umkUser1);
-            System.out.println("DTO decifrado (PasswordRef2): " + mapper.writeValueAsString(ref2Decrypted));
-
-            System.out.println("Usuário e senhas de teste inicializados com dados cifrados!");
+            System.out.println("\nTeste finalizado: cadastro + login + addPassword + listPasswords + retrievePassword + logout.");
         };
     }
 }

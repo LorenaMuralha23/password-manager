@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import org.springframework.stereotype.Service;
 
 /**
  * Serviço utilitário para geração de hashes criptográficos.
@@ -19,6 +20,7 @@ import java.util.Base64;
  * </ul>
  */
 
+@Service
 public class HashService {
     
     /**

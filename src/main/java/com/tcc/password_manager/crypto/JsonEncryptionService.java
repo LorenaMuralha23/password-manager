@@ -1,6 +1,7 @@
 package com.tcc.password_manager.crypto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Service;
 
 /**
  * Serviço de alto nível que faz a ponte entre DTOs em claro e Entities cifradas.
@@ -29,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * </pre>
  */
 
+@Service
 public class JsonEncryptionService {
     
     private final CryptoService cryptoService;

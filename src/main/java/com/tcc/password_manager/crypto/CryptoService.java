@@ -6,6 +6,7 @@ import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import org.springframework.stereotype.Service;
 
 /**
  * Serviço central de criptografia do sistema.
@@ -62,6 +63,7 @@ import javax.crypto.spec.SecretKeySpec;
  * </ul>
  */
 
+@Service
 public class CryptoService {
     
     private static final String TRANSFORMATION = "AES/GCM/NoPadding";
