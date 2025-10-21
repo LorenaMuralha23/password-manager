@@ -1,0 +1,52 @@
+name: connection-org2
+version: 1.0.0
+
+client:
+  organization: Org2
+  connection:
+    timeout:
+      peer:
+        endorser: 300
+
+organizations:
+  Org2:
+    mspid: Org2MSP
+    peers:
+      - peer0.org2.example.com
+    certificateAuthorities:
+      - ca.org2.example.com
+
+peers:
+  peer0.org2.example.com:
+    url: grpcs://localhost:9051
+    tlsCACerts:
+      path: src/main/resources/crypto/ca-org2.pem
+    grpcOptions:
+      ssl-target-name-override: peer0.org2.example.com
+      request-timeout: 120000
+      hostnameOverride: peer0.org2.example.com
+      grpc.keepalive_time_ms: 120000
+      grpc.keepalive_timeout_ms: 20000
+    roles:
+      endorsingPeer: true
+      chaincodeQuery: true
+      ledgerQuery: true
+      discover: true   # 👈 Habilita discovery para o peer da Org2
+
+orderers:
+  orderer.example.com:
+    url: grpcs://localhost:7050
+    tlsCACerts:
+      path: src/main/resources/crypto/ca-orderer.pem
+    grpcOptions:
+      ssl-target-name-override: orderer.example.com
+      hostnameOverride: orderer.example.com
+
+certificateAuthorities:
+  ca.org2.example.com:
+    url: https://localhost:8054
+    caName: ca-org2
+    tlsCACerts:
+      path: src/main/resources/crypto/ca-org2.pem
+    httpOptions:
+      verify: false
