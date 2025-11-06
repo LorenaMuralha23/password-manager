@@ -5,20 +5,23 @@ import com.tcc.password_manager.controller.PasswordManagerController;
 import com.tcc.password_manager.dto.PasswordReferenceClearData;
 import com.tcc.password_manager.model.AppUser;
 import com.tcc.password_manager.model.PasswordReference;
+import com.tcc.password_manager.util.LogTimer;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Classe de inicialização usada para validar o fluxo completo da arquitetura:
- * - Registro e login do usuário
- * - Criptografia local (UMK)
- * - Fragmentação e distribuição blockchain
- * - Persistência e recuperação de dados
+ * Classe de inicialização usada para validar o fluxo completo da arquitetura: -
+ * Registro e login do usuário - Criptografia local (UMK) - Fragmentação e
+ * distribuição blockchain - Persistência e recuperação de dados
  */
 @Configuration
 public class DataInitializer {
+
+    private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
 
     @Bean
     CommandLineRunner initDatabase(PasswordManagerController controller) {
@@ -26,107 +29,129 @@ public class DataInitializer {
         return args -> {
             ObjectMapper mapper = new ObjectMapper();
 
-            System.out.println("\n==============================================");
-            System.out.println("INICIALIZAÇÃO DO TESTE DE ARQUITETURA COMPLETA");
-            System.out.println("==============================================");
+            log.info("==============================================");
+            log.info("INICIALIZAÇÃO DO TESTE DE FLUXO");
+            log.info("==============================================");
 
-            // === 1️⃣ CADASTRO DE USUÁRIO ===
+            // === CADASTRO DE USUÁRIO ===
+            LogTimer timerRegister = LogTimer.start("Cadastro de Usuário");
             String senhaMestre = "senha123";
             String mfaSecret = "mfa1";
             AppUser user = controller.registerUser(senhaMestre, mfaSecret);
 
-            System.out.println("\n=== Cadastro de Usuário ===");
-            System.out.println("User ID........: " + user.getId());
-            System.out.println("EncryptedData..: " + user.getEncryptedData());
-            System.out.println("UMK Wrapped....: " + user.getUmkWrapped());
-            System.out.println("UMK Hash.......: " + user.getUmkHash());
+            log.info("User ID........: {}", user.getId());
+            log.debug("EncryptedData..: {}", user.getEncryptedData());
+            log.debug("UMK Wrapped....: {}", user.getUmkWrapped());
+            log.debug("UMK Hash.......: {}", user.getUmkHash());
+            timerRegister.stopAndLog(log);
 
-            // === 2️⃣ LOGIN ===
+            // === LOGIN ===
+            LogTimer timerLogin = LogTimer.start("Login de Usuário");
             try {
                 controller.login(user.getId(), senhaMestre);
-                System.out.println("\n=== Login bem-sucedido ===");
+                log.info("Login bem-sucedido | User ID: {}", user.getId());
             } catch (Exception e) {
-                System.err.println("Falha no login: " + e.getMessage());
+                log.error("Falha no login: {}", e.getMessage());
                 return;
+            } finally {
+                timerLogin.stopAndLog(log);
             }
 
-            // === 3️⃣ ADICIONAR SENHAS ===
+            // === ADICIONAR SENHAS ===
+            LogTimer timerAdd = LogTimer.start("Cadastro de Credenciais");
             try {
-                System.out.println("\n=== Cadastrando senhas com fragmentação + blockchain ===");
+                log.info("Iniciando fragmentação e armazenamento em blockchain...");
 
-                // Teste com duas senhas para validar consistência
                 PasswordReference github = controller.addPassword("GitHub", "senhaGitHub@123");
                 PasswordReference gmail = controller.addPassword("Gmail", "senhaGmail@456");
 
-                System.out.println("→ GitHub: ID " + github.getId());
-                System.out.println("→ Gmail:  ID " + gmail.getId());
+                log.info("Credenciais registradas com sucesso:");
+                log.info("→ GitHub: ID {}", github.getId());
+                log.info("→ Gmail:  ID {}", gmail.getId());
 
-                System.out.println("\nDados criptografados no banco:");
-                System.out.println("GitHub EncryptedData: " + github.getEncryptedData());
-                System.out.println("Gmail  EncryptedData: " + gmail.getEncryptedData());
+                log.debug("GitHub EncryptedData: {}", github.getEncryptedData());
+                log.debug("Gmail  EncryptedData: {}", gmail.getEncryptedData());
 
             } catch (Exception e) {
-                System.err.println("Falha ao adicionar senhas: " + e.getMessage());
+                log.error("Falha ao adicionar senhas: {}", e.getMessage());
+            } finally {
+                timerAdd.stopAndLog(log);
             }
 
-            // === 4️⃣ LISTAR SENHAS ===
+            // === LISTAR SENHAS ===
+            LogTimer timerList = LogTimer.start("Listagem de Credenciais");
             try {
                 List<PasswordReference> all = controller.listPasswords();
-                System.out.println("\n=== Lista de Senhas (banco local) ===");
-                for (PasswordReference ref : all) {
-                    System.out.println("ID: " + ref.getId());
-                    System.out.println("EncryptedData: " + ref.getEncryptedData());
-                    System.out.println("--------------------------------------");
+                if (all.isEmpty()) {
+                    log.warn("Nenhuma credencial encontrada no banco local.");
+                } else {
+                    log.info("Total de credenciais encontradas: {}", all.size());
+                    for (PasswordReference ref : all) {
+                        log.debug("ID: {} | EncryptedData: {}", ref.getId(), ref.getEncryptedData());
+                    }
                 }
             } catch (Exception e) {
-                System.err.println("Falha ao listar senhas: " + e.getMessage());
+                log.error("Falha ao listar senhas: {}", e.getMessage());
+            } finally {
+                timerList.stopAndLog(log);
             }
 
-            // === 5️⃣ RECUPERAR METADADOS ===
+            // === RECUPERAR METADADOS ===
+            LogTimer timerMeta = LogTimer.start("Recuperação de Metadados");
             try {
                 List<PasswordReference> all = controller.listPasswords();
                 if (!all.isEmpty()) {
                     Long refId = all.get(0).getId();
                     PasswordReferenceClearData clear = controller.retrievePassword(refId);
 
-                    System.out.println("\n=== Recuperação de Senha (metadados decifrados) ===");
-                    System.out.println("Password ID.....: " + refId);
-                    System.out.println("Nickname........: " + clear.getNickname());
-                    System.out.println("BlockchainRef1..: " + clear.getBlockchainReference1());
-                    System.out.println("BlockchainRef2..: " + clear.getBlockchainReference2());
-                    System.out.println("FragmentMap.....: " + clear.getFragmentationReference());
+                    log.info("Metadados decifrados | ID: {}", refId);
+                    log.debug("Nickname........: {}", clear.getNickname());
+                    log.debug("BlockchainRef1..: {}", clear.getBlockchainReference1());
+                    log.debug("BlockchainRef2..: {}", clear.getBlockchainReference2());
+                    log.debug("FragmentMap.....: {}", clear.getFragmentationReference());
+                } else {
+                    log.warn("Nenhuma credencial para recuperar metadados.");
                 }
             } catch (Exception e) {
-                System.err.println("Falha ao recuperar metadados: " + e.getMessage());
+                log.error("Falha ao recuperar metadados: {}", e.getMessage());
+            } finally {
+                timerMeta.stopAndLog(log);
             }
 
-            // === 6️⃣ RECUPERAR SENHA ORIGINAL (com decifragem completa) ===
+            // === RECUPERAR SENHA ORIGINAL ===
+            LogTimer timerRetrieve = LogTimer.start("Recuperação Completa da Senha");
             try {
                 List<PasswordReference> all = controller.listPasswords();
                 if (!all.isEmpty()) {
                     Long refId = all.get(0).getId();
                     String plainPassword = controller.retrievePasswordPlain(refId);
 
-                    System.out.println("\n=== Recuperação Completa da Senha ===");
-                    System.out.println("Password ID.....: " + refId);
-                    System.out.println("Senha Original..: " + plainPassword);
+                    log.info("Senha recuperada com sucesso | ID: {}", refId);
+                    log.debug("Senha Original..: {}", plainPassword);
+                } else {
+                    log.warn("Nenhuma senha para recuperar.");
                 }
             } catch (Exception e) {
-                System.err.println("Falha ao recuperar senha em claro: " + e.getMessage());
+                log.error("Falha ao recuperar senha em claro: {}", e.getMessage());
+            } finally {
+                timerRetrieve.stopAndLog(log);
             }
 
-            // === 7️⃣ LOGOUT ===
+            // === LOGOUT ===
+            LogTimer timerLogout = LogTimer.start("Logout do Usuário");
             try {
                 controller.logout();
-                System.out.println("\n=== Logout realizado ===");
+                log.info("Logout realizado com sucesso.");
             } catch (Exception e) {
-                System.err.println("Falha ao realizar logout: " + e.getMessage());
+                log.error("Falha ao realizar logout: {}", e.getMessage());
+            } finally {
+                timerLogout.stopAndLog(log);
             }
 
-            System.out.println("\n==============================================");
-            System.out.println("TESTE FINALIZADO COM SUCESSO");
-            System.out.println("Fluxo validado: cadastro + login + addPassword + listPasswords + retrievePassword + retrievePasswordPlain + logout");
-            System.out.println("==============================================\n");
+            log.info("==============================================");
+            log.info("TESTE FINALIZADO COM SUCESSO");
+            log.info("Fluxo validado: cadastro → login → addPassword → listPasswords → retrievePassword → retrievePasswordPlain → logout");
+            log.info("==============================================");
         };
     }
 }

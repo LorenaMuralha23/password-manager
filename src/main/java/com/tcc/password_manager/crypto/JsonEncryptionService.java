@@ -1,6 +1,9 @@
 package com.tcc.password_manager.crypto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tcc.password_manager.util.LogTimer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,6 +36,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class JsonEncryptionService {
     
+    private static final Logger log = LoggerFactory.getLogger(JsonEncryptionService.class);
+    
     private final CryptoService cryptoService;
     private final ObjectMapper mapper;
 
@@ -51,17 +56,29 @@ public class JsonEncryptionService {
      * @return string JSON representando um EncryptedPayload
      */
     public <T> String encryptDto(T dto, byte[] key, byte[] aad, Class<T> dtoClass) {
+        String dtoName = dtoClass != null ? dtoClass.getSimpleName() : (dto != null ? dto.getClass().getSimpleName() : "UnknownDTO");
+        LogTimer timer = LogTimer.start("Encrypt DTO to encrypted_data (" + dtoName + ")");
         try {
+            log.info("Iniciando cifragem do DTO para armazenamento seguro. Tipo: {}", dtoName);
+            
             // 1. Serializar DTO em JSON (claro)
             String plaintextJson = mapper.writeValueAsString(dto);
+            log.debug("DTO serializado em JSON. Tamanho: {} caracteres.", plaintextJson.length());
 
             // 2. Cifrar JSON com AES-GCM → EncryptedPayload
             EncryptedPayload payload = cryptoService.encryptString(key, plaintextJson, aad);
+            log.debug("Payload cifrado gerado com sucesso.");
 
             // 3. Serializar EncryptedPayload em JSON (para salvar no banco)
-            return cryptoService.toJson(payload);
+            String encryptedData = cryptoService.toJson(payload);
+            log.info("Cifragem do DTO concluída. Tamanho do encrypted_data: {} caracteres.", encryptedData.length());
+
+            return encryptedData;
         } catch (Exception e) {
+            log.error("Falha ao cifrar DTO {} para encrypted_data: {}", dtoName, e.getMessage());
             throw new RuntimeException("Falha ao cifrar DTO para encrypted_data", e);
+        } finally {
+            timer.stopAndLog(log);
         }
     }
 
@@ -76,17 +93,29 @@ public class JsonEncryptionService {
      * @return DTO reconstruído em claro
      */
     public <T> T decryptToDto(String encryptedData, byte[] key, byte[] aad, Class<T> dtoClass) {
+        String dtoName = dtoClass != null ? dtoClass.getSimpleName() : "UnknownDTO";
+        LogTimer timer = LogTimer.start("Decrypt encrypted_data to DTO (" + dtoName + ")");
         try {
+            log.info("Iniciando decifragem do campo encrypted_data para o DTO: {}", dtoName);
+            log.debug("Tamanho do encrypted_data: {} caracteres.", encryptedData != null ? encryptedData.length() : 0);
+
             // 1. Desserializar EncryptedPayload
             EncryptedPayload payload = cryptoService.fromJson(encryptedData);
+            log.debug("EncryptedPayload desserializado com sucesso.");
 
             // 2. Decifrar para JSON claro
             String plaintextJson = cryptoService.decryptToString(key, payload, aad);
+            log.debug("Campo encrypted_data decifrado. Tamanho do JSON em claro: {} caracteres.", plaintextJson.length());
 
             // 3. Reconstituir o DTO a partir do JSON
-            return mapper.readValue(plaintextJson, dtoClass);
+            T dto = mapper.readValue(plaintextJson, dtoClass);
+            log.info("Decifragem concluída. DTO {} reconstruído com sucesso.", dtoName);
+            return dto;
         } catch (Exception e) {
+            log.error("Falha ao decifrar encrypted_data para DTO {}: {}", dtoName, e.getMessage());
             throw new RuntimeException("Falha ao decifrar encrypted_data para DTO", e);
+        } finally {
+            timer.stopAndLog(log);
         }
     }
     

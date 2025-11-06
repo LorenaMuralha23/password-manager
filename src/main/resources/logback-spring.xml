@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <!-- === Variáveis === -->
+    <property name="LOG_PATH" value="logs" />
+    <property name="LOG_FILE" value="${LOG_PATH}/password-manager.log" />
+
+    <!-- === Padrão de formatação === -->
+    <property name="LOG_PATTERN" value="%d{HH:mm:ss.SSS} %-5level  [%logger{36}] - %msg%n"/>
+
+    <!-- === Appender de Console === -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- === Appender de Arquivo (registro persistente para experimentos) === -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+
+        <!-- Política de rotação baseada em tempo -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/password-manager-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- === Definição dos níveis de log === -->
+    <logger name="org.springframework" level="WARN"/>
+<!--    <logger name="com.tcc.password_manager" level="INFO"/>-->
+    <logger name="com.tcc.password_manager" level="DEBUG"/>
+    <logger name="com.tcc.password_manager.service.FragmentationService" level="TRACE"/>
+    
+    <logger name="com.tcc.password_manager.util.LogTimer" level="INFO" additivity="false">
+        <appender-ref ref="FILE" />
+    </logger>
+
+    <!-- === Root Logger (nível global) === -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+
+</configuration>
