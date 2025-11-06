@@ -14,13 +14,13 @@ import lombok.ToString;
 public class ShuffleMap {
     int originalIndex; 
     int value;
-
+    
+    public ShuffleMap() {
+    }
+    
     public ShuffleMap(int originalIndex, int value) {
         this.originalIndex = originalIndex;
         this.value = value;
-    }
-
-    public ShuffleMap() {
     }
     
 }

@@ -1,7 +1,10 @@
 package com.tcc.password_manager.crypto;
 
+import com.tcc.password_manager.util.LogTimer;
 import java.security.SecureRandom;
 import java.util.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,7 +27,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class KeyGeneratorService {
+    
+    private static final Logger log = LoggerFactory.getLogger(KeyGeneratorService.class);
     private static final int AES_KEY_SIZE_BYTES = 32; // 256 bits
+    
     private final SecureRandom secureRandom = new SecureRandom();
 
     /**
@@ -33,9 +39,18 @@ public class KeyGeneratorService {
      * @return chave em formato de array de bytes (32 bytes)
      */
     public byte[] generateKey() {
-        byte[] key = new byte[AES_KEY_SIZE_BYTES];
-        secureRandom.nextBytes(key);
-        return key;
+        LogTimer timer = LogTimer.start("Generate AES-256 key (byte array)");
+        try {
+            byte[] key = new byte[AES_KEY_SIZE_BYTES];
+            secureRandom.nextBytes(key);
+            log.info("Nova chave AES-256 gerada com sucesso. Tamanho: {} bytes.", AES_KEY_SIZE_BYTES);
+            return key;
+        } catch (Exception e) {
+            log.error("Falha ao gerar chave AES-256: {}", e.getMessage());
+            throw new RuntimeException("Erro ao gerar chave AES-256", e);
+        } finally {
+            timer.stopAndLog(log);
+        }
     }
 
     /**
@@ -44,7 +59,18 @@ public class KeyGeneratorService {
      * @return chave em formato Base64 (string)
      */
     public String generateKeyBase64() {
-        return Base64.getEncoder().encodeToString(generateKey());
+        LogTimer timer = LogTimer.start("Generate AES-256 key (Base64)");
+        try {
+            byte[] key = generateKey();
+            String base64Key = Base64.getEncoder().encodeToString(key);
+            log.info("Nova chave AES-256 gerada e convertida para Base64. Comprimento da string: {} caracteres.", base64Key.length());
+            return base64Key;
+        } catch (Exception e) {
+            log.error("Falha ao gerar chave AES-256 em Base64: {}", e.getMessage());
+            throw new RuntimeException("Erro ao gerar chave em Base64", e);
+        } finally {
+            timer.stopAndLog(log);
+        }
     }
     
 }

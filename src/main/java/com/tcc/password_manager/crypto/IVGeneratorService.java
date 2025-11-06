@@ -1,7 +1,10 @@
 package com.tcc.password_manager.crypto;
 
+import com.tcc.password_manager.util.LogTimer;
 import java.security.SecureRandom;
 import java.util.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,7 +21,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class IVGeneratorService {
     
+    private static final Logger log = LoggerFactory.getLogger(IVGeneratorService.class);
     private static final int GCM_IV_SIZE_BYTES = 12; // 96 bits (padrão para GCM)
+    
     private final SecureRandom secureRandom = new SecureRandom();
 
     /**
@@ -27,9 +32,18 @@ public class IVGeneratorService {
      * @return IV em formato de array de bytes
      */
     public byte[] generateIV() {
-        byte[] iv = new byte[GCM_IV_SIZE_BYTES];
-        secureRandom.nextBytes(iv);
-        return iv;
+        LogTimer timer = LogTimer.start("Generate GCM IV (byte array)");
+        try {
+            byte[] iv = new byte[GCM_IV_SIZE_BYTES];
+            secureRandom.nextBytes(iv);
+            log.info("IV gerado com sucesso. Tamanho: {} bytes.", GCM_IV_SIZE_BYTES);
+            return iv;
+        } catch (Exception e) {
+            log.error("Falha ao gerar IV GCM: {}", e.getMessage());
+            throw new RuntimeException("Erro ao gerar IV GCM", e);
+        } finally {
+            timer.stopAndLog(log);
+        }
     }
 
     /**
@@ -38,7 +52,17 @@ public class IVGeneratorService {
      * @return IV em formato Base64 (string)
      */
     public String generateIVBase64() {
-        return Base64.getEncoder().encodeToString(generateIV());
+        LogTimer timer = LogTimer.start("Generate GCM IV (Base64)");
+        try {
+            String base64 = Base64.getEncoder().encodeToString(generateIV());
+            log.info("IV GCM gerado e convertido para Base64. Comprimento da string: {} caracteres.", base64.length());
+            return base64;
+        } catch (Exception e) {
+            log.error("Falha ao gerar IV GCM em Base64: {}", e.getMessage());
+            throw new RuntimeException("Erro ao gerar IV GCM em Base64", e);
+        } finally {
+            timer.stopAndLog(log);
+        }
     }
     
 }
