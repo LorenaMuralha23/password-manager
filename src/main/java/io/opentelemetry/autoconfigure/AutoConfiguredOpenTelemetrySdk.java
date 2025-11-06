@@ -12,7 +12,7 @@ public class AutoConfiguredOpenTelemetrySdk {
         return new AutoConfiguredOpenTelemetrySdkBuilder();
     }
 
-    // ✅ Novo método que o Fabric tenta invocar
+    // Novo método que o Fabric tenta invocar
     public OpenTelemetrySdk getOpenTelemetrySdk() {
         return new OpenTelemetrySdk();
     }

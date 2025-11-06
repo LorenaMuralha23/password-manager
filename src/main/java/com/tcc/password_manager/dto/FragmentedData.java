@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- *
- * @author Lolo
- */
 @Getter
 @Setter
 public class FragmentedData {

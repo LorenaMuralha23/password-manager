@@ -4,10 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-/**
- *
- * @author Lolo
- */
 @Getter
 @Setter
 @ToString
