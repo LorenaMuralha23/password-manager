@@ -6,7 +6,7 @@ import io.grpc.ClientCall;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.Channel;
-import io.grpc.CallOptions; // ✅ import que faltava
+import io.grpc.CallOptions; // import que faltava
 
 /**
  * Stub placeholder for missing OpenTelemetry class used by Hyperledger Fabric SDK.

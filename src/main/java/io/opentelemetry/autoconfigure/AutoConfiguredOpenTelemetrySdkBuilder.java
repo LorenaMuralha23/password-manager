@@ -10,7 +10,7 @@ public class AutoConfiguredOpenTelemetrySdkBuilder {
         return this;
     }
 
-    // ✅ Adiciona o método build() que o Fabric tenta chamar
+    // Adiciona o método build() que o Fabric tenta chamar
     public AutoConfiguredOpenTelemetrySdk build() {
         return new AutoConfiguredOpenTelemetrySdk();
     }
