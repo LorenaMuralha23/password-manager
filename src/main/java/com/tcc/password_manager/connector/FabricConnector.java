@@ -42,7 +42,7 @@ public class FabricConnector {
                 "secondchannel",
                 "appUserOrg2"));
 
-        log.info("Configurações das organizações pré-carregadas: {}", orgConfigs.keySet());
+        log.info("Configuracoes das organizacoes pre-carregadas: {}", orgConfigs.keySet());
     }
 
     /**
@@ -55,16 +55,16 @@ public class FabricConnector {
         LogTimer timer = LogTimer.start("Connect to Fabric network (" + orgName + ")");
 
         try {
-            log.info("Solicitação de contrato para a organização '{}' e chaincode '{}'.", orgName, chaincode);
+            log.info("Solicitacao de contrato para a organizacao '{}' e chaincode '{}'.", orgName, chaincode);
 
             NetworkConfig config = orgConfigs.get(orgName.toLowerCase());
             if (config == null) {
-                log.warn("Organização desconhecida: {}", orgName);
-                throw new IllegalArgumentException("Organização desconhecida: " + orgName);
+                log.warn("Organizacao desconhecida: {}", orgName);
+                throw new IllegalArgumentException("Organizacao desconhecida: " + orgName);
             }
 
             Path networkConfigPath = Paths.get(config.configPath);
-            log.debug("Usando arquivo de configuração: {}", networkConfigPath.toAbsolutePath());
+            log.debug("Usando arquivo de configuracao: {}", networkConfigPath.toAbsolutePath());
             log.debug("Canal: {}, Identidade: {}", config.channel, config.user);
 
             Gateway.Builder builder = Gateway.createBuilder()
@@ -72,17 +72,17 @@ public class FabricConnector {
                     .networkConfig(networkConfigPath)
                     .discovery(true); // Habilita descoberta automática de peers
 
-            log.debug("Estabelecendo conexão com o gateway Fabric para {}", orgName);
+            log.debug("Estabelecendo conexao com o gateway Fabric para {}", orgName);
             Gateway gateway = builder.connect();
 
             Network network = gateway.getNetwork(config.channel);
             Contract contract = network.getContract(chaincode);
 
-            log.info("Conexão estabelecida com sucesso. Contrato obtido para '{}'.", orgName);
+            log.info("Conexao estabelecida com sucesso. Contrato obtido para '{}'.", orgName);
             return contract;
         } catch (Exception e) {
-            log.error("Falha ao conectar à rede Fabric ({}) ou obter contrato: {}", orgName, e.getMessage());
-            throw new RuntimeException("Erro ao conectar à rede Fabric: " + e.getMessage(), e);
+            log.error("Falha ao conectar a rede Fabric ({}) ou obter contrato: {}", orgName, e.getMessage());
+            throw new RuntimeException("Erro ao conectar a rede Fabric: " + e.getMessage(), e);
         } finally {
             timer.stopAndLog(log);
         }

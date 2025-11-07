@@ -41,7 +41,7 @@ public class HashService {
     public String hashToBase64(byte[] data) {
         LogTimer timer = LogTimer.start("Generate SHA-256 hash (bytes)");
         try {
-            log.debug("Iniciando geração de hash SHA-256 a partir de bytes. Tamanho da entrada: {} bytes.",
+            log.debug("Iniciando geracao de hash SHA-256 a partir de bytes. Tamanho da entrada: {} bytes.",
                     data != null ? data.length : 0);
 
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -68,7 +68,7 @@ public class HashService {
     public String hashToBase64(String data) {
         LogTimer timer = LogTimer.start("Generate SHA-256 hash (string)");
         try {
-            log.debug("Iniciando geração de hash SHA-256 a partir de string. Comprimento: {} caracteres.",
+            log.debug("Iniciando geracao de hash SHA-256 a partir de string. Comprimento: {} caracteres.",
                     data != null ? data.length() : 0);
 
             String hash = hashToBase64(data.getBytes(StandardCharsets.UTF_8));
@@ -94,7 +94,7 @@ public class HashService {
         LogTimer timer = LogTimer.start("Verify hash equality (constant-time)");
         try {
             if (expected == null || provided == null) {
-                log.warn("Tentativa de comparação de hash com valores nulos.");
+                log.warn("Tentativa de comparacao de hash com valores nulos.");
                 return false;
             }
 
@@ -112,10 +112,10 @@ public class HashService {
             }
 
             boolean equals = (result == 0);
-            log.info("Comparação de hash concluída. Resultado: {}", equals ? "iguais" : "diferentes");
+            log.info("Comparação de hash concluida. Resultado: {}", equals ? "iguais" : "diferentes");
             return equals;
         } catch (Exception e) {
-            log.error("Erro durante verificação de hash: {}", e.getMessage());
+            log.error("Erro durante verificacao de hash: {}", e.getMessage());
             throw new RuntimeException("Falha ao comparar hashes", e);
         } finally {
             timer.stopAndLog(log);

@@ -34,7 +34,7 @@ public class WalletInitializer implements CommandLineRunner {
             log.info("Verificando wallet em: {}", walletPath.toAbsolutePath());
 
             if (wallet.get(USERNAME) != null) {
-                log.info("Identidade '{}' já está registrada no wallet.", USERNAME);
+                log.info("Identidade '{}' ja esta registrada no wallet.", USERNAME);
                 return;
             }
 
@@ -47,7 +47,7 @@ public class WalletInitializer implements CommandLineRunner {
             Path keyPath = walletPath.resolve(USERNAME).resolve("key.pem");
 
             if (!Files.exists(certPath) || !Files.exists(keyPath)) {
-                log.error("Arquivos de identidade não encontrados. Esperado em: {}, {}", certPath, keyPath);
+                log.error("Arquivos de identidade nao encontrados. Esperado em: {}, {}", certPath, keyPath);
                 return;
             }
 

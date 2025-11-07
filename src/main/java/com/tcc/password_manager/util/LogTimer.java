@@ -37,7 +37,7 @@ public class LogTimer {
      */
     public static LogTimer start(String description) {
         Logger log = LoggerFactory.getLogger(getCallerClassName());
-        log.info("=== [INÍCIO] {} ===", description);
+        log.info("=== [INICIO] {} ===", description);
         return new LogTimer(description);
     }
 

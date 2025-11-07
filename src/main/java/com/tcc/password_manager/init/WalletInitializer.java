@@ -42,7 +42,7 @@ public class WalletInitializer {
                     "src/main/resources/crypto/msp-org2/keystore/priv_sk",
                     "Org2MSP");
 
-            log.info("Registro de identidades concluído com sucesso.");
+            log.info("Registro de identidades concluido com sucesso.");
         } catch (IOException e) {
             log.log(Level.SEVERE, "Erro de I/O ao inicializar o wallet: {0}", e.getMessage());
         } catch (Exception e) {
@@ -55,7 +55,7 @@ public class WalletInitializer {
 
         try {
             if (wallet.get(userName) != null) {
-                log.info(() -> "Identidade '" + userName + "' já registrada para " + orgName);
+                log.info(() -> "Identidade '" + userName + "' ja registrada para " + orgName);
                 return;
             }
 
@@ -63,7 +63,7 @@ public class WalletInitializer {
             Path keyFile = Paths.get(keyPath);
 
             if (!Files.exists(certFile) || !Files.exists(keyFile)) {
-                log.warning(() -> "Certificado ou chave não encontrados para " + orgName +
+                log.warning(() -> "Certificado ou chave nao encontrados para " + orgName +
                         ". Caminhos esperados: " + certFile + ", " + keyFile);
                 return;
             }

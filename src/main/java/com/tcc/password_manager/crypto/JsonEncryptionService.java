@@ -71,7 +71,7 @@ public class JsonEncryptionService {
 
             // 3. Serializar EncryptedPayload em JSON (para salvar no banco)
             String encryptedData = cryptoService.toJson(payload);
-            log.info("Cifragem do DTO concluída. Tamanho do encrypted_data: {} caracteres.", encryptedData.length());
+            log.info("Cifragem do DTO concluida. Tamanho do encrypted_data: {} caracteres.", encryptedData.length());
 
             return encryptedData;
         } catch (Exception e) {
@@ -109,7 +109,7 @@ public class JsonEncryptionService {
 
             // 3. Reconstituir o DTO a partir do JSON
             T dto = mapper.readValue(plaintextJson, dtoClass);
-            log.info("Decifragem concluída. DTO {} reconstruído com sucesso.", dtoName);
+            log.info("Decifragem concluida. DTO {} reconstruído com sucesso.", dtoName);
             return dto;
         } catch (Exception e) {
             log.error("Falha ao decifrar encrypted_data para DTO {}: {}", dtoName, e.getMessage());

@@ -104,7 +104,7 @@ public class CryptoService {
      */
     private SecretKeySpec toAesKey(byte[] key) {
         if (key == null || key.length != AES_256_KEY_LEN) {
-            log.error("A chave AES fornecida é inválida. Tamanho atual: {} bytes",
+            log.error("A chave AES fornecida e inválida. Tamanho atual: {} bytes",
                     key == null ? 0 : key.length);
             throw new IllegalArgumentException("A chave AES deve ter 32 bytes (256 bits).");
         }
@@ -171,8 +171,8 @@ public class CryptoService {
                     Base64.getEncoder().encodeToString(tag)
             );
 
-            log.info("Cifragem concluída com sucesso. Tamanho do ciphertext: {} bytes", ciphertext.length);
-            log.debug("Tag de autenticação: {} bytes.", tag.length);
+            log.info("Cifragem concluida com sucesso. Tamanho do ciphertext: {} bytes", ciphertext.length);
+            log.debug("Tag de autenticacao: {} bytes.", tag.length);
             return payload;
         } catch (Exception e) {
             log.error("Falha ao cifrar com AES-GCM: {}", e.getMessage());
@@ -208,8 +208,8 @@ public class CryptoService {
 
         try {
             if (!"AES-GCM-256".equals(payload.getAlg())) {
-                log.error("Algoritmo não suportado: {}", payload.getAlg());
-                throw new IllegalArgumentException("Algoritmo não suportado: " + payload.getAlg());
+                log.error("Algoritmo nao suportado: {}", payload.getAlg());
+                throw new IllegalArgumentException("Algoritmo nao suportado: " + payload.getAlg());
             }
 
             byte[] iv = Base64.getDecoder().decode(payload.getIv());
@@ -230,7 +230,7 @@ public class CryptoService {
             }
 
             byte[] plain = cipher.doFinal(ctAndTag);
-            log.info("Decifragem concluída com sucesso. Tamanho do plaintext: {} bytes", plain.length);
+            log.info("Decifragem concluida com sucesso. Tamanho do plaintext: {} bytes", plain.length);
             return plain;
         } catch (Exception e) {
             log.error("Falha ao decifrar com AES-GCM: {}", e.getMessage());

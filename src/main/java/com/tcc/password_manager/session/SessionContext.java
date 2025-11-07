@@ -115,7 +115,7 @@ public class SessionContext {
      */
     public synchronized void requireAuthenticated() {
         if (!authenticated) {
-            throw new IllegalStateException("Faça login antes de executar esta operação.");
+            throw new IllegalStateException("Faca login antes de executar esta operacao.");
         }
     }
 

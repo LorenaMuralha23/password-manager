@@ -43,7 +43,7 @@ public class PasswordReferenceService {
         LogTimer timer = LogTimer.start("Encrypt and persist password reference");
         
         try {
-            log.info("Iniciando processo de cifragem e persistência de credencial para o usuário ID: {}", user.getId());
+            log.info("Iniciando processo de cifragem e persistencia de credencial para o usuario ID: {}", user.getId());
 
             String encryptedData = jsonEncService.encryptDto(dto, userKey, null, PasswordReferenceClearData.class);
             log.debug("Metadados cifrados. Tamanho do payload: {} caracteres.", encryptedData.length());
@@ -55,7 +55,7 @@ public class PasswordReferenceService {
             return saved;
         } catch (Exception e) {
             log.error("Falha ao cifrar ou persistir credencial: {}", e.getMessage());
-            throw new RuntimeException("Erro ao salvar referência de senha", e);
+            throw new RuntimeException("Erro ao salvar referencia de senha", e);
         } finally {
             timer.stopAndLog(log);
         }
@@ -93,7 +93,7 @@ public class PasswordReferenceService {
             return dto;
         } catch (Exception e) {
             log.error("Falha ao decifrar entidade ID {}: {}", entity.getId(), e.getMessage());
-            throw new RuntimeException("Erro ao decifrar referência de senha", e);
+            throw new RuntimeException("Erro ao decifrar referencia de senha", e);
         } finally {
             timer.stopAndLog(log);
         }
@@ -107,11 +107,11 @@ public class PasswordReferenceService {
         
         try {
             List<PasswordReference> list = passwordReferenceRepository.findAll();
-            log.info("Consulta concluída. Total de registros encontrados: {}", list.size());
+            log.info("Consulta concluida. Total de registros encontrados: {}", list.size());
             return list;
         } catch (Exception e) {
-            log.error("Falha ao consultar todas as referências: {}", e.getMessage());
-            throw new RuntimeException("Erro ao buscar todas as referências", e);
+            log.error("Falha ao consultar todas as referencias: {}", e.getMessage());
+            throw new RuntimeException("Erro ao buscar todas as referencias", e);
         } finally {
             timer.stopAndLog(log);
         }
@@ -125,14 +125,14 @@ public class PasswordReferenceService {
         try {
             Optional<PasswordReference> ref = passwordReferenceRepository.findById(id);
             if (ref.isPresent()) {
-                log.info("Referência encontrada para o ID: {}", id);
+                log.info("Referencia encontrada para o ID: {}", id);
             } else {
-                log.warn("Nenhuma referência encontrada para o ID: {}", id);
+                log.warn("Nenhuma referencia encontrada para o ID: {}", id);
             }
             return ref;
         } catch (Exception e) {
-            log.error("Erro ao buscar referência ID {}: {}", id, e.getMessage());
-            throw new RuntimeException("Erro ao buscar referência por ID", e);
+            log.error("Erro ao buscar referencia ID {}: {}", id, e.getMessage());
+            throw new RuntimeException("Erro ao buscar referencia por ID", e);
         } finally {
             timer.stopAndLog(log);
         }
@@ -145,11 +145,11 @@ public class PasswordReferenceService {
         LogTimer timer = LogTimer.start("Find password references by user ID");
         try {
             List<PasswordReference> refs = passwordReferenceRepository.findByUserId(userId);
-            log.info("Consulta concluída. Total de registros encontrados para o usuário {}: {}", userId, refs.size());
+            log.info("Consulta concluida. Total de registros encontrados para o usuario {}: {}", userId, refs.size());
             return refs;
         } catch (Exception e) {
-            log.error("Falha ao buscar referências para o usuário {}: {}", userId, e.getMessage());
-            throw new RuntimeException("Erro ao buscar referências por usuário", e);
+            log.error("Falha ao buscar referências para o usuario {}: {}", userId, e.getMessage());
+            throw new RuntimeException("Erro ao buscar referencias por usuario", e);
         } finally {
             timer.stopAndLog(log);
         }
@@ -162,10 +162,10 @@ public class PasswordReferenceService {
         LogTimer timer = LogTimer.start("Delete password reference by ID");
         try {
             passwordReferenceRepository.deleteById(id);
-            log.info("Referência de senha removida com sucesso. ID: {}", id);
+            log.info("Referencia de senha removida com sucesso. ID: {}", id);
         } catch (Exception e) {
-            log.error("Falha ao remover referência ID {}: {}", id, e.getMessage());
-            throw new RuntimeException("Erro ao remover referência de senha", e);
+            log.error("Falha ao remover referencia ID {}: {}", id, e.getMessage());
+            throw new RuntimeException("Erro ao remover referencia de senha", e);
         } finally {
             timer.stopAndLog(log);
         }

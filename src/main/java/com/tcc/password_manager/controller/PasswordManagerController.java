@@ -54,20 +54,20 @@ public class PasswordManagerController {
         this.jsonEncService = jsonEncService;
     }
 
-    // ==================== Usuário ====================
+    // ==================== Usuario ====================
     /**
-     * Cadastro de novo usuário.
+     * Cadastro de novo usuario.
      */
     public AppUser registerUser(String senhaMestre, String mfaSecret) {
-        LogTimer timer = LogTimer.start("🧍 Registro de Usuário");
+        LogTimer timer = LogTimer.start("Registro de Usuario");
         try {
             AppUser user = appUserService.registerUser(senhaMestre, mfaSecret);
-            log.info("Usuário registrado com sucesso | ID: {}", user.getId());
+            log.info("Usuario registrado com sucesso | ID: {}", user.getId());
             log.debug("EncryptedData..: {}", user.getEncryptedData());
             log.debug("UMK Wrapped....: {}", user.getUmkWrapped());
             return user;
         } catch (Exception e) {
-            log.error("Erro ao registrar usuário: {}", e.getMessage());
+            log.error("Erro ao registrar usuario: {}", e.getMessage());
             throw e;
         } finally {
             timer.stopAndLog(log);
@@ -78,7 +78,7 @@ public class PasswordManagerController {
      * Login: valida senha mestre, recupera UMK e popula sessão.
      */
     public void login(Long userId, String senhaMestre) {
-        LogTimer timer = LogTimer.start("Login de Usuário");
+        LogTimer timer = LogTimer.start("Login de Usuario");
         try {
             sessionManager.login(userId, senhaMestre);
             log.info("Login realizado com sucesso | User ID: {}", userId);
@@ -94,7 +94,7 @@ public class PasswordManagerController {
      * Logout: encerra a sessão atual.
      */
     public void logout() {
-        LogTimer timer = LogTimer.start("🚪 Logout de Usuário");
+        LogTimer timer = LogTimer.start("Logout de Usuario");
         try {
             sessionManager.logout();
             log.info("Logout realizado com sucesso.");
@@ -108,7 +108,7 @@ public class PasswordManagerController {
 
     // ==================== Senhas ====================
     /**
-     * Adiciona uma nova senha para o usuário logado. Fluxo: 1. Cifra com a UMK
+     * Adiciona uma nova senha para o usuario logado. Fluxo: 1. Cifra com a UMK
      * 2. Fragmenta o ciphertext 3. Grava fragmentos nas blockchains 4. Persiste
      * referências cifradas no banco
      */
@@ -120,7 +120,7 @@ public class PasswordManagerController {
         byte[] umk = session.getUmk();
 
         AppUser user = appUserService.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
 
         LogTimer timer = LogTimer.start("Cadastro de Credencial (" + nickname + ")");
         try {
@@ -133,11 +133,11 @@ public class PasswordManagerController {
                     null,
                     String.class
             );
-            log.info("Criptografia concluída | Tamanho: {} bytes", encryptedPassword.length());
+            log.info("Criptografia concluida | Tamanho: {} bytes", encryptedPassword.length());
 
             // 2. Fragmenta o ciphertext
             FragmentedData fragmented = fragmentationService.fragmentPassword(encryptedPassword);
-            log.info("Fragmentação concluída | Fragmentos: 2");
+            log.info("Fragmentacao concluida | Fragmentos: 2");
             log.debug("Fragmento 1: {} bytes | Fragmento 2: {} bytes",
                     fragmented.getFragment1().length(), fragmented.getFragment2().length());
 
@@ -146,11 +146,11 @@ public class PasswordManagerController {
 
             // 4. Grava fragmentos nas blockchains (Org1 e Org2)
             blockchainService.storeFragments(fragmentId, fragmented.getFragment1(), fragmented.getFragment2());
-            log.info("Fragmentos armazenados nas blockchains | ID lógico: {}", fragmentId);
+            log.info("Fragmentos armazenados nas blockchains | ID logico: {}", fragmentId);
 
             // 5. Serializa o mapa de cortes para reconstrução futura
             String fragRef = mapper.writeValueAsString(fragmented.getCutPointsMap());
-            log.debug("Mapa de fragmentação: {}", fragRef);
+            log.debug("Mapa de fragmentacao: {}", fragRef);
 
             // 6. Monta DTO com referências reais
             PasswordReferenceClearData dto = new PasswordReferenceClearData();
@@ -174,7 +174,7 @@ public class PasswordManagerController {
     }
 
     /**
-     * Lista todas as senhas do usuário logado (somente metadados).
+     * Lista todas as senhas do usuario logado (somente metadados).
      */
     public List<PasswordReference> listPasswords() {
         sessionManager.requireActiveSession();
@@ -196,7 +196,7 @@ public class PasswordManagerController {
     }
 
     /**
-     * Recupera uma senha do usuário (somente metadados decifrados).
+     * Recupera uma senha do usuario (somente metadados decifrados).
      */
     public PasswordReferenceClearData retrievePassword(Long passwordId) {
         sessionManager.requireActiveSession();
@@ -205,14 +205,14 @@ public class PasswordManagerController {
         Long userId = session.getUserId();
         byte[] umk = session.getUmk();
 
-        LogTimer timer = LogTimer.start("Recuperação de Metadados | Password ID: " + passwordId);
+        LogTimer timer = LogTimer.start("Recuperacao de Metadados | Password ID: " + passwordId);
 
         try {
             PasswordReference entity = passwordService.findById(passwordId)
-                    .orElseThrow(() -> new RuntimeException("Senha não encontrada"));
+                    .orElseThrow(() -> new RuntimeException("Senha nao encontrada"));
 
             if (!entity.getUser().getId().equals(userId)) {
-                throw new SecurityException("Tentativa de acessar senha de outro usuário!");
+                throw new SecurityException("Tentativa de acessar senha de outro usuario!");
             }
             // 1) Decifra metadados (refs + mapa)
             PasswordReferenceClearData dto = passwordService.decrypt(entity, umk);
@@ -245,14 +245,14 @@ public class PasswordManagerController {
         Long userId = session.getUserId();
         byte[] umk = session.getUmk();
 
-        LogTimer timer = LogTimer.start("Recuperação Completa da Senha | ID: " + passwordId);
+        LogTimer timer = LogTimer.start("Recuperacao Completa da Senha | ID: " + passwordId);
 
         try {
             PasswordReference entity = passwordService.findById(passwordId)
-                    .orElseThrow(() -> new RuntimeException("Senha não encontrada"));
+                    .orElseThrow(() -> new RuntimeException("Senha nao encontrada"));
 
             if (!entity.getUser().getId().equals(userId)) {
-                throw new SecurityException("Tentativa de acessar senha de outro usuário!");
+                throw new SecurityException("Tentativa de acessar senha de outro usuario!");
             }
 
             PasswordReferenceClearData dto = passwordService.decrypt(entity, umk);

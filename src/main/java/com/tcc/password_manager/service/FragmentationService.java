@@ -29,7 +29,7 @@ public class FragmentationService {
         LogTimer timer = LogTimer.start("Fragmentation operation");
 
         try {
-            log.debug("Iniciando fragmentação. Comprimento total da entrada: {} caracteres", password.length());
+            log.debug("Iniciando fragmentacao. Comprimento total da entrada: {} caracteres", password.length());
 
             int cutNumber = getRandomCutPoint(password.length());
             double fragmentsNumber = Math.floor(password.length() - cutNumber);
@@ -42,19 +42,37 @@ public class FragmentationService {
 
             ArrayList<String> passwordFragments = breakPassword(password, cutPoints);
             ArrayList<ShuffleMap> shuffledCutpoints = shuffleCutPoints(this.originalCutPoints);
+
+            // --- Diagnóstico detalhado ---
+            log.debug("OriginalCutPoints: {}", this.originalCutPoints);
+            log.debug("Mapa embaralhado gerado (antes da reorganizacao):");
+            for (ShuffleMap sm : shuffledCutpoints) {
+                log.debug("originalIndex={} | value={}", sm.getOriginalIndex(), sm.getValue());
+            }
+
             String reorganizedPassword = organizePassword(this.originalCutPoints, shuffledCutpoints, passwordFragments);
+
+            // --- Diagnóstico do texto reorganizado ---
+            log.debug("Senha reorganizada (pre-fragmentacao final): {}",
+                    reorganizedPassword.substring(0, Math.min(60, reorganizedPassword.length())));
 
             int newCutPoint = getRandomCutPoint(reorganizedPassword.length());
             String fragment1 = reorganizedPassword.substring(0, newCutPoint);
             String fragment2 = reorganizedPassword.substring(newCutPoint, reorganizedPassword.length());
-            log.info("Fragmentação concluída. Fragmento 1: {} chars, Fragmento 2: {} chars",
+            log.info("Fragmentacao concluida. Fragmento 1: {} chars, Fragmento 2: {} chars",
                     fragment1.length(), fragment2.length());
             log.debug("Novo ponto de corte final: {}", newCutPoint);
+
+            // --- Mapa final completo ---
+            log.debug("Mapa de reconstrucao final:");
+            for (ShuffleMap sm : shuffledCutpoints) {
+                log.debug("originalIndex={} | value={}", sm.getOriginalIndex(), sm.getValue());
+            }
 
             FragmentedData fragmentationMap = new FragmentedData(fragment1, fragment2, shuffledCutpoints);
             return fragmentationMap;
         } catch (Exception e) {
-            log.error("Falha durante o processo de fragmentação: {}", e.getMessage());
+            log.error("Falha durante o processo de fragmentacao: {}", e.getMessage());
             throw new RuntimeException("Erro ao fragmentar dados: " + e.getMessage(), e);
         } finally {
             timer.stopAndLog(log);
@@ -82,8 +100,16 @@ public class FragmentationService {
             start = end;
         }
 
-        log.debug("Senha dividida em {} fragmentos. Padrão de cortes: {}",
+        log.debug("Senha dividida em {} fragmentos. Padrao de cortes: {}",
                 passwordFragments.size(), this.originalCutPoints);
+
+        // Diagnóstico de fragmentos
+        for (int i = 0; i < passwordFragments.size(); i++) {
+            String frag = passwordFragments.get(i);
+            log.debug("Fragment[{}] -> \"{}...\" ({} chars)", i,
+                    frag.substring(0, Math.min(10, frag.length())), frag.length());
+        }
+
         return passwordFragments;
     }
 
@@ -98,7 +124,18 @@ public class FragmentationService {
             shuffleList.add(new ShuffleMap(i, cutPoints.get(i)));
         }
 
+        log.debug("Antes do sort(value):");
+        for (ShuffleMap sm : shuffleList) {
+            log.debug("originalIndex={} | value={}", sm.getOriginalIndex(), sm.getValue());
+        }
+
         shuffleList.sort((a, b) -> Integer.compare(a.getValue(), b.getValue()));
+
+        log.debug("Depois do sort(value):");
+        for (ShuffleMap sm : shuffleList) {
+            log.debug("originalIndex={} | value={}", sm.getOriginalIndex(), sm.getValue());
+        }
+
         log.debug("Mapa de embaralhamento criado com {} elementos.", shuffleList.size());
 
         return shuffleList;
@@ -113,7 +150,7 @@ public class FragmentationService {
         }
 
         int point = 1 + secureRandom.nextInt(max - 1);
-        log.trace("Ponto de corte aleatório gerado: {}", point);
+        log.trace("Ponto de corte aleatorio gerado: {}", point);
         return point;
     }
 
@@ -123,9 +160,16 @@ public class FragmentationService {
     public String organizePassword(ArrayList<Integer> originalCutpoints, ArrayList<ShuffleMap> newCutPoints, ArrayList<String> passwordFragments) {
         ArrayList<String> orderedFragments = new ArrayList<>(Collections.nCopies(passwordFragments.size(), ""));
 
+        log.debug("Iniciando reorganizacao. newCutPoints.size={} | passwordFragments.size={}",
+                newCutPoints.size(), passwordFragments.size());
+
         for (int i = 0; i < newCutPoints.size(); i++) {
             ShuffleMap map = newCutPoints.get(i);
-            orderedFragments.set(map.getOriginalIndex(), passwordFragments.get(i));
+            log.debug("i={} | map(originalIndex={}, value={}) | fragment[i]={}...",
+                    i, map.getOriginalIndex(), map.getValue(),
+                    passwordFragments.get(i).substring(0, Math.min(8, passwordFragments.get(i).length())));
+            String frag = passwordFragments.get(map.getOriginalIndex());
+            orderedFragments.set(i, frag);
         }
 
         StringBuilder password = new StringBuilder();
@@ -133,7 +177,7 @@ public class FragmentationService {
             password.append(fragment);
         }
 
-        log.debug("Senha reorganizada após embaralhamento. Novo comprimento: {}", password.length());
+        log.debug("Senha reorganizada apos embaralhamento. Novo comprimento: {}", password.length());
         return password.toString();
     }
 
@@ -145,6 +189,9 @@ public class FragmentationService {
         LogTimer timer = LogTimer.start("Join password operation");
 
         try {
+            log.debug("Iniciando recomposicao. shuffledPassword.length={} | mapSize={}",
+                    shuffledPassword.length(), newCutPoints.size());
+
             ArrayList<String> fragments = new ArrayList<>();
 
             int start = 0;
@@ -154,6 +201,7 @@ public class FragmentationService {
                     end = shuffledPassword.length();
                 }
                 fragments.add(shuffledPassword.substring(start, end));
+                log.debug("Fragment join[{}] => len={} ({}..{})", map.getOriginalIndex(), map.getValue(), start, end);
                 start = end;
             }
 
@@ -168,7 +216,7 @@ public class FragmentationService {
                 password.append(fragment);
             }
 
-            log.info("Recomposição concluída. Tamanho final: {} caracteres.", password.length());
+            log.info("Recomposicao concluida. Tamanho final: {} caracteres.", password.length());
             return password.toString();
         } catch (Exception e) {
             log.error("Falha ao recompor a senha: {}", e.getMessage());

@@ -33,15 +33,15 @@ public class BlockchainService {
         LogTimer timer = LogTimer.start("Store fragments in blockchains");
 
         try {
-            log.info("Iniciando gravação dos fragmentos nas blockchains para o ID: {}", id);
+            log.info("Iniciando gravacao dos fragmentos nas blockchains para o ID: {}", id);
 
             Contract contractOrg1 = connector.getContract("org1", "passwordmanager");
-            log.debug("Obtido contrato da Org1. Enviando transação para salvar fragmento 1.");
+            log.debug("Obtido contrato da Org1. Enviando transacao para salvar fragmento 1.");
             contractOrg1.submitTransaction("savePassword", id, fragment1);
             log.info("Fragmento 1 gravado com sucesso na Org1.");
 
             Contract contractOrg2 = connector.getContract("org2", "passwordmanager");
-            log.debug("Obtido contrato da Org2. Enviando transação para salvar fragmento 2.");
+            log.debug("Obtido contrato da Org2. Enviando transacao para salvar fragmento 2.");
             contractOrg2.submitTransaction("savePassword", id, fragment2);
             log.info("Fragmento 2 gravado com sucesso na Org2.");
 
@@ -64,7 +64,7 @@ public class BlockchainService {
         LogTimer timer = LogTimer.start("Retrieve fragments from blockchains");
 
         try {
-            log.info("Iniciando recuperação dos fragmentos das blockchains para o ID: {}", id);
+            log.info("Iniciando recuperacao dos fragmentos das blockchains para o ID: {}", id);
 
             Contract contractOrg1 = connector.getContract("org1", "passwordmanager");
             Contract contractOrg2 = connector.getContract("org2", "passwordmanager");
@@ -102,7 +102,7 @@ public class BlockchainService {
         LogTimer timer = LogTimer.start("Delete fragments from blockchains");
 
         try {
-            log.info("Iniciando remoção dos fragmentos das blockchains para o ID: {}", id);
+            log.info("Iniciando remocao dos fragmentos das blockchains para o ID: {}", id);
 
             Contract contractOrg1 = connector.getContract("org1", "passwordmanager");
             Contract contractOrg2 = connector.getContract("org2", "passwordmanager");

@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * Serviço responsável pelo registro, autenticação e recuperação de usuários.
+ * Serviço responsável pelo registro, autenticação e recuperação de usuarios.
  * Controla todo o ciclo de vida da User Master Key (UMK).
  */
 @Service
@@ -47,12 +47,12 @@ public class AppUserService {
     }
 
     /**
-     * Realiza o registro de um novo usuário:
+     * Realiza o registro de um novo usuario:
      *
      * 1. Gera uma nova UMK (User Master Key), chave AES-256 aleatória exclusiva
-     * do usuário.
+     * do usuario.
      *
-     * 2. Deriva a passwordKey a partir da senha mestre informada pelo usuário.
+     * 2. Deriva a passwordKey a partir da senha mestre informada pelo usuario.
      * (atualmente derivação simples → no futuro substituir por PBKDF2/Argon2).
      *
      * 3. Usa a passwordKey para cifrar a UMK (wrap da UMK) em modo AES-GCM. O
@@ -65,30 +65,30 @@ public class AppUserService {
      * umkWrapped e umkHash.
      *
      * 6. Cifra esse DTO com a própria UMK, gerando o campo encryptedData. Esse
-     * campo contém as informações do usuário em formato seguro.
+     * campo contém as informações do usuario em formato seguro.
      *
      * 7. Persiste no banco a entidade AppUser com: - encryptedData (DTO cifrado
-     * com a UMK) - umkWrapped (UMK cifrada com a senha do usuário) - umkHash
+     * com a UMK) - umkWrapped (UMK cifrada com a senha do usuario) - umkHash
      * (hash da UMK em claro, para validação futura).
      */
     public AppUser registerUser(String masterKey, String mfaSecret) {
         LogTimer timer = LogTimer.start("Register new user");
 
         try {
-            log.info("Iniciando registro de novo usuário.");
+            log.info("Iniciando registro de novo usuario.");
             log.debug("Gerando User Master Key (UMK) e derivando chave a partir da senha mestre.");
 
             // 1. Gera UMK
             byte[] umk = keyGen.generateKey();
 
-            // 2. Deriva chave a partir da senha do usuário
+            // 2. Deriva chave a partir da senha do usuario
             SecretKeySpec passwordKey = passwordKeyDerivation.deriveKey(masterKey);
             log.debug("Chave derivada a partir da senha mestre. Tamanho: {} bytes.", passwordKey.getEncoded().length);
 
             // 3. Wrap da UMK (cifra a UMK com a senha)
             EncryptedPayload umkWrappedPayload = cryptoService.encrypt(passwordKey.getEncoded(), umk, null);
             String umkWrappedJson = cryptoService.toJson(umkWrappedPayload);
-            log.info("UMK cifrada com a senha do usuário (wrap concluído).");
+            log.info("UMK cifrada com a senha do usuario (wrap concluido).");
 
             // 4. Gera hash da UMK (para validar no login)
             String umkHash = hashService.hashToBase64(umk);
@@ -103,7 +103,7 @@ public class AppUserService {
 
             // 6. Cifra o DTO com a própria UMK
             String encryptedData = jsonEncService.encryptDto(userDto, umk, null, AppUserClearData.class);
-            log.debug("DTO do usuário cifrado com a própria UMK. Tamanho: {} caracteres.", encryptedData.length());
+            log.debug("DTO do usuario cifrado com a propria UMK. Tamanho: {} caracteres.", encryptedData.length());
 
             // 7. Persiste no banco
             AppUser entity = new AppUser();
@@ -112,18 +112,18 @@ public class AppUserService {
             entity.setUmkHash(umkHash);
             AppUser saved = userRepository.save(entity);
 
-            log.info("Registro de usuário concluído com sucesso. ID: {}", saved.getId());
+            log.info("Registro de usuario concluido com sucesso. ID: {}", saved.getId());
             return saved;
         } catch (Exception e) {
-            log.error("Falha no registro de usuário: {}", e.getMessage());
-            throw new RuntimeException("Erro ao registrar usuário", e);
+            log.error("Falha no registro de usuario: {}", e.getMessage());
+            throw new RuntimeException("Erro ao registrar usuario", e);
         } finally {
             timer.stopAndLog(log);
         }
     }
 
     /**
-     * Realiza o login do usuário: 1. Recupera a entidade do banco pelo userId.
+     * Realiza o login do usuario: 1. Recupera a entidade do banco pelo userId.
      *
      * 2. Deriva a chave simétrica (passwordKey) a partir da senha mestre
      * informada.
@@ -131,10 +131,10 @@ public class AppUserService {
      * 3. Usa a passwordKey para decifrar o umkWrapped armazenado → obtém a UMK
      * real.
      *
-     * 4. Calcula o hash da UMK e compara com o umkHash salvo no banco. - Se não
+     * 4. Calcula o hash da UMK e compara com o umkHash salvo no banco. - Se nao
      * coincidir, a senha está incorreta ou os dados foram adulterados.
      *
-     * 5. Se coincidir, usa a UMK para decifrar o encryptedData do usuário.
+     * 5. Se coincidir, usa a UMK para decifrar o encryptedData do usuario.
      *
      * 6. Retorna o DTO em claro (AppUserClearData).
      */
@@ -142,40 +142,40 @@ public class AppUserService {
         LogTimer timer = LogTimer.start("User login");
 
         try {
-            log.info("Iniciando processo de login para o usuário ID: {}", userId);
+            log.info("Iniciando processo de login para o usuario ID: {}", userId);
 
             // 1. Recupera entity
             AppUser entity = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                    .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
 
-            // 2. Deriva passwordKey a partir da senha do usuário
+            // 2. Deriva passwordKey a partir da senha do usuario
             SecretKeySpec passwordKey = passwordKeyDerivation.deriveKey(masterKey);
-            log.debug("Chave derivada a partir da senha mestre para autenticação.");
+            log.debug("Chave derivada a partir da senha mestre para autenticacao.");
 
             // 3. Faz o unwrap da UMK com a passwordKey
             EncryptedPayload umkPayload = cryptoService.fromJson(entity.getUmkWrapped());
             byte[] umk = cryptoService.decrypt(passwordKey.getEncoded(), umkPayload, null);
-            log.debug("UMK decifrada com sucesso a partir da senha do usuário.");
+            log.debug("UMK decifrada com sucesso a partir da senha do usuario.");
 
             // 4. Valida hash da UMK
             String recoveredHash = hashService.hashToBase64(umk);
             if (!recoveredHash.equals(entity.getUmkHash())) {
-                log.warn("Hash da UMK não corresponde. Possível senha incorreta ou dados adulterados.");
+                log.warn("Hash da UMK nao corresponde. Possivel senha incorreta ou dados adulterados.");
                 throw new RuntimeException("Senha incorreta ou dados adulterados!");
             }
 
-            // 5. Decifra os dados do usuário com a UMK
+            // 5. Decifra os dados do usuario com a UMK
             AppUserClearData clearData = jsonEncService.decryptToDto(
                     entity.getEncryptedData(),
                     umk,
                     null,
                     AppUserClearData.class
             );
-            log.info("Login realizado com sucesso para o usuário ID: {}", userId);
+            log.info("Login realizado com sucesso para o usuario ID: {}", userId);
 
             return clearData;
         } catch (Exception e) {
-            log.error("Falha durante o login do usuário ID {}: {}", userId, e.getMessage());
+            log.error("Falha durante o login do usuario ID {}: {}", userId, e.getMessage());
             throw new RuntimeException("Erro ao realizar login", e);
         } finally {
             timer.stopAndLog(log);
@@ -188,13 +188,13 @@ public class AppUserService {
     public AppUserClearData decryptToDto(String encryptedData, byte[] userKey) {
         LogTimer timer = LogTimer.start("Decrypt user encrypted data");
         try {
-            log.debug("Iniciando decifragem do campo encryptedData do usuário.");
+            log.debug("Iniciando decifragem do campo encryptedData do usuario.");
             AppUserClearData dto = jsonEncService.decryptToDto(encryptedData, userKey, null, AppUserClearData.class);
             log.info("Campo encryptedData decifrado com sucesso.");
             return dto;
         } catch (Exception e) {
-            log.error("Falha ao decifrar dados do usuário: {}", e.getMessage());
-            throw new RuntimeException("Erro ao decifrar dados do usuário", e);
+            log.error("Falha ao decifrar dados do usuario: {}", e.getMessage());
+            throw new RuntimeException("Erro ao decifrar dados do usuario", e);
         } finally {
             timer.stopAndLog(log);
         }
@@ -206,13 +206,13 @@ public class AppUserService {
     public AppUserClearData decrypt(AppUser entity, byte[] userKey) {
         LogTimer timer = LogTimer.start("Decrypt user entity");
         try {
-            log.debug("Decifrando entidade de usuário ID: {}", entity.getId());
+            log.debug("Decifrando entidade de usuario ID: {}", entity.getId());
             AppUserClearData dto = decryptToDto(entity.getEncryptedData(), userKey);
-            log.info("Entidade de usuário ID {} decifrada com sucesso.", entity.getId());
+            log.info("Entidade de usuario ID {} decifrada com sucesso.", entity.getId());
             return dto;
         } catch (Exception e) {
-            log.error("Falha ao decifrar entidade de usuário ID {}: {}", entity.getId(), e.getMessage());
-            throw new RuntimeException("Erro ao decifrar entidade de usuário", e);
+            log.error("Falha ao decifrar entidade de usuario ID {}: {}", entity.getId(), e.getMessage());
+            throw new RuntimeException("Erro ao decifrar entidade de usuario", e);
         } finally {
             timer.stopAndLog(log);
         }
@@ -224,11 +224,11 @@ public class AppUserService {
         LogTimer timer = LogTimer.start("Find all users");
         try {
             List<AppUser> list = userRepository.findAll();
-            log.info("Consulta de usuários concluída. Total encontrado: {}", list.size());
+            log.info("Consulta de usuarios concluida. Total encontrado: {}", list.size());
             return list;
         } catch (Exception e) {
-            log.error("Falha ao listar usuários: {}", e.getMessage());
-            throw new RuntimeException("Erro ao listar usuários", e);
+            log.error("Falha ao listar usuarios: {}", e.getMessage());
+            throw new RuntimeException("Erro ao listar usuarios", e);
         } finally {
             timer.stopAndLog(log);
         }
@@ -239,14 +239,14 @@ public class AppUserService {
         try {
             Optional<AppUser> user = userRepository.findById(id);
             if (user.isPresent()) {
-                log.info("Usuário encontrado para o ID: {}", id);
+                log.info("Usuario encontrado para o ID: {}", id);
             } else {
-                log.warn("Nenhum usuário encontrado para o ID: {}", id);
+                log.warn("Nenhum usuario encontrado para o ID: {}", id);
             }
             return user;
         } catch (Exception e) {
-            log.error("Erro ao buscar usuário ID {}: {}", id, e.getMessage());
-            throw new RuntimeException("Erro ao buscar usuário por ID", e);
+            log.error("Erro ao buscar usuario ID {}: {}", id, e.getMessage());
+            throw new RuntimeException("Erro ao buscar usuario por ID", e);
         } finally {
             timer.stopAndLog(log);
         }
@@ -256,10 +256,10 @@ public class AppUserService {
         LogTimer timer = LogTimer.start("Delete user by ID");
         try {
             userRepository.deleteById(id);
-            log.info("Usuário removido com sucesso. ID: {}", id);
+            log.info("Usuario removido com sucesso. ID: {}", id);
         } catch (Exception e) {
-            log.error("Falha ao remover usuário ID {}: {}", id, e.getMessage());
-            throw new RuntimeException("Erro ao remover usuário", e);
+            log.error("Falha ao remover usuario ID {}: {}", id, e.getMessage());
+            throw new RuntimeException("Erro ao remover usuario", e);
         } finally {
             timer.stopAndLog(log);
         }

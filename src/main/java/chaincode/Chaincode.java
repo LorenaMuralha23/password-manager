@@ -44,7 +44,7 @@ public class Chaincode implements ContractInterface {
         String encryptedPassword = stub.getStringState(key);
 
         if (encryptedPassword == null || encryptedPassword.isEmpty()) {
-            String msg = "Senha não encontrada para a chave: " + key;
+            String msg = "Senha nao encontrada para a chave: " + key;
             logger.warning(msg);
             throw new ChaincodeException(msg, "PASSWORD_NOT_FOUND");
         }
@@ -65,7 +65,7 @@ public class Chaincode implements ContractInterface {
         String existing = stub.getStringState(key);
 
         if (existing == null || existing.isEmpty()) {
-            String msg = "Tentativa de remoção falhou — chave inexistente: " + key;
+            String msg = "Tentativa de remocao falhou — chave inexistente: " + key;
             logger.warning(msg);
             throw new ChaincodeException(msg, "PASSWORD_NOT_FOUND");
         }

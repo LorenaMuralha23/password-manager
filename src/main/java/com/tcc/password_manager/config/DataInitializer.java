@@ -29,12 +29,14 @@ public class DataInitializer {
         return args -> {
             ObjectMapper mapper = new ObjectMapper();
 
+            log.info(System.lineSeparator());
             log.info("==============================================");
-            log.info("INICIALIZAÇÃO DO TESTE DE FLUXO");
+            log.info("INICIALIZACAO DO TESTE DE FLUXO");
             log.info("==============================================");
-
+            log.info(System.lineSeparator());
+            
             // === CADASTRO DE USUÁRIO ===
-            LogTimer timerRegister = LogTimer.start("Cadastro de Usuário");
+            LogTimer timerRegister = LogTimer.start("Cadastro de Usuario");
             String senhaMestre = "senha123";
             String mfaSecret = "mfa1";
             AppUser user = controller.registerUser(senhaMestre, mfaSecret);
@@ -46,7 +48,7 @@ public class DataInitializer {
             timerRegister.stopAndLog(log);
 
             // === LOGIN ===
-            LogTimer timerLogin = LogTimer.start("Login de Usuário");
+            LogTimer timerLogin = LogTimer.start("Login de Usuario");
             try {
                 controller.login(user.getId(), senhaMestre);
                 log.info("Login bem-sucedido | User ID: {}", user.getId());
@@ -60,7 +62,7 @@ public class DataInitializer {
             // === ADICIONAR SENHAS ===
             LogTimer timerAdd = LogTimer.start("Cadastro de Credenciais");
             try {
-                log.info("Iniciando fragmentação e armazenamento em blockchain...");
+                log.info("Iniciando fragmentacao e armazenamento em blockchain...");
 
                 PasswordReference github = controller.addPassword("GitHub", "senhaGitHub@123");
                 PasswordReference gmail = controller.addPassword("Gmail", "senhaGmail@456");
@@ -97,7 +99,7 @@ public class DataInitializer {
             }
 
             // === RECUPERAR METADADOS ===
-            LogTimer timerMeta = LogTimer.start("Recuperação de Metadados");
+            LogTimer timerMeta = LogTimer.start("Recuperacao de Metadados");
             try {
                 List<PasswordReference> all = controller.listPasswords();
                 if (!all.isEmpty()) {
@@ -119,7 +121,7 @@ public class DataInitializer {
             }
 
             // === RECUPERAR SENHA ORIGINAL ===
-            LogTimer timerRetrieve = LogTimer.start("Recuperação Completa da Senha");
+            LogTimer timerRetrieve = LogTimer.start("Recuperacao Completa da Senha");
             try {
                 List<PasswordReference> all = controller.listPasswords();
                 if (!all.isEmpty()) {
@@ -138,7 +140,7 @@ public class DataInitializer {
             }
 
             // === LOGOUT ===
-            LogTimer timerLogout = LogTimer.start("Logout do Usuário");
+            LogTimer timerLogout = LogTimer.start("Logout do Usuario");
             try {
                 controller.logout();
                 log.info("Logout realizado com sucesso.");
@@ -148,10 +150,12 @@ public class DataInitializer {
                 timerLogout.stopAndLog(log);
             }
 
+            log.info(System.lineSeparator());
             log.info("==============================================");
             log.info("TESTE FINALIZADO COM SUCESSO");
-            log.info("Fluxo validado: cadastro → login → addPassword → listPasswords → retrievePassword → retrievePasswordPlain → logout");
+            log.info("Fluxo validado: cadastro -> login -> addPassword -> listPasswords -> retrievePassword -> retrievePasswordPlain -> logout");
             log.info("==============================================");
+            log.info(System.lineSeparator());
         };
     }
 }

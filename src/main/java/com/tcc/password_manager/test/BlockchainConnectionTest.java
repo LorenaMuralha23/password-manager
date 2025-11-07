@@ -9,7 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 /**
- * Executa um teste automatizado de comunicação com ambas as blockchains (Org1 e Org2).
+ * Executa um teste automatizado de comunicacao com ambas as blockchains (Org1 e Org2).
  * 
  * Fluxo testado:
  * Grava fragmentos nas duas blockchains
@@ -26,7 +26,7 @@ public class BlockchainConnectionTest implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        LogTimer timer = LogTimer.start("Teste de Comunicação com Duas Blockchains");
+        LogTimer timer = LogTimer.start("Teste de Comunicacao com Duas Blockchains");
 
         try {
             // Dados de teste simulados
@@ -34,18 +34,18 @@ public class BlockchainConnectionTest implements CommandLineRunner {
             String fragmentOrg1 = "ENC_FRAG_ORG1_ABC123";
             String fragmentOrg2 = "ENC_FRAG_ORG2_DEF456";
 
-            // Gravação
+            // Gravacao
             log.info("Gravando fragmentos nas blockchains...");
             blockchainService.storeFragments(id, fragmentOrg1, fragmentOrg2);
             log.info("Fragmentos gravados com sucesso!");
 
-            // Recuperação
+            // Recuperacao
             log.info("Recuperando fragmentos das blockchains...");
             String[] fragments = blockchainService.retrieveFragments(id);
             log.info("Fragmento Org1 recuperado: {}", fragments[0]);
             log.info("Fragmento Org2 recuperado: {}", fragments[1]);
 
-            // Remoção
+            // Remocao
             log.info("Removendo fragmentos de teste das blockchains...");
             blockchainService.deleteFragments(id);
             log.info("Fragmentos removidos com sucesso!");
@@ -53,7 +53,7 @@ public class BlockchainConnectionTest implements CommandLineRunner {
             log.info("=== Teste finalizado com sucesso ===");
 
         } catch (Exception e) {
-            log.error("Erro durante o teste de comunicação com as blockchains: {}", e.getMessage(), e);
+            log.error("Erro durante o teste de comunicacao com as blockchains: {}", e.getMessage(), e);
         } finally {
             timer.stopAndLog(log);
         }

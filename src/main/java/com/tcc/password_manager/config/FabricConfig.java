@@ -26,7 +26,7 @@ public class FabricConfig {
             Path walletPath = Paths.get("src", "main", "resources", "wallet");
 
             if (!Files.exists(walletPath)) {
-                log.warn("Diretório do wallet não encontrado em: {}", walletPath.toAbsolutePath());
+                log.warn("Diretorio do wallet nao encontrado em: {}", walletPath.toAbsolutePath());
             } else {
                 log.info("Wallet localizado em: {}", walletPath.toAbsolutePath());
             }
@@ -44,9 +44,9 @@ public class FabricConfig {
         Path path = Paths.get("src", "main", "resources", "connection-org1.yml");
 
         if (!Files.exists(path)) {
-            log.error("Arquivo de configuração Fabric não encontrado: {}", path.toAbsolutePath());
+            log.error("Arquivo de configuracao Fabric não encontrado: {}", path.toAbsolutePath());
         } else {
-            log.info("Caminho de configuração da rede Fabric definido: {}", path.toAbsolutePath());
+            log.info("Caminho de configuracao da rede Fabric definido: {}", path.toAbsolutePath());
         }
 
         return path;
