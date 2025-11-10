@@ -1,0 +1,128 @@
+16:55:28.782 INFO   [c.t.p.connector.FabricConnector] - Wallet inicializada no caminho: D:\IFSC\8th Phase\TCB\Desenvolvimento\Desenvolvimento\password-manager\wallet
+16:55:28.791 INFO   [c.t.p.connector.FabricConnector] - Configuracoes das organizacoes pre-carregadas: [org1, org2]
+16:55:28.805 INFO   [c.t.p.connector.FabricConnector] - Wallet inicializada no caminho: D:\IFSC\8th Phase\TCB\Desenvolvimento\Desenvolvimento\password-manager\wallet
+16:55:28.806 INFO   [c.t.p.connector.FabricConnector] - Configuracoes das organizacoes pre-carregadas: [org1, org2]
+16:55:28.809 INFO   [c.t.p.config.FabricConfig] - Wallet localizado em: D:\IFSC\8th Phase\TCB\Desenvolvimento\Desenvolvimento\password-manager\src\main\resources\wallet
+16:55:28.814 INFO   [c.t.p.config.FabricConfig] - Caminho de configuracao da rede Fabric definido: D:\IFSC\8th Phase\TCB\Desenvolvimento\Desenvolvimento\password-manager\src\main\resources\connection-org1.yml
+16:55:31.054 INFO   [c.t.p.config.WalletInitializer] - Verificando wallet em: D:\IFSC\8th Phase\TCB\Desenvolvimento\Desenvolvimento\password-manager\src\main\resources\wallet
+16:55:31.793 INFO   [c.t.p.config.WalletInitializer] - Identidade 'appUser' ja esta registrada no wallet.
+16:55:31.800 INFO   [c.tcc.password_manager.cli.CliRunner] - Inicializando CLI do Password Manager...
+16:56:09.609 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Registro de Usuario ===
+16:56:09.610 INFO   [c.t.p.service.AppUserService] - === [INICIO] Register new user ===
+16:56:09.610 INFO   [c.t.p.service.AppUserService] - Iniciando registro de novo usuario.
+16:56:09.611 INFO   [c.t.p.crypto.KeyGeneratorService] - === [INICIO] Generate AES-256 key (byte array) ===
+16:56:09.611 INFO   [c.t.p.crypto.KeyGeneratorService] - Nova chave AES-256 gerada com sucesso. Tamanho: 32 bytes.
+16:56:09.612 INFO   [c.t.p.crypto.KeyGeneratorService] - [FIM] Generate AES-256 key (byte array) | Tempo total: 1 ms
+16:56:09.613 INFO   [c.t.p.crypto.PasswordKeyDerivation] - === [INICIO] Derive key from master password (simplified) ===
+16:56:09.613 INFO   [c.t.p.crypto.PasswordKeyDerivation] - Iniciando derivacao de chave a partir da senha mestre.
+16:56:09.614 INFO   [c.t.p.crypto.PasswordKeyDerivation] - [FIM] Derive key from master password (simplified) | Tempo total: 1 ms
+16:56:09.614 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] T_enc | Encrypt operation (AES-256-GCM) ===
+16:56:09.614 INFO   [c.t.p.crypto.IVGeneratorService] - === [INICIO] Generate GCM IV (byte array) ===
+16:56:09.615 INFO   [c.t.p.crypto.IVGeneratorService] - IV gerado com sucesso. Tamanho: 12 bytes.
+16:56:09.615 INFO   [c.t.p.crypto.IVGeneratorService] - [FIM] Generate GCM IV (byte array) | Tempo total: 1 ms
+16:56:09.659 INFO   [c.t.p.crypto.CryptoService] - Cifragem concluida com sucesso. Tamanho do ciphertext: 32 bytes
+16:56:09.660 INFO   [c.t.p.crypto.CryptoService] - [FIM] T_enc | Encrypt operation (AES-256-GCM) | Tempo total: 46 ms
+16:56:09.708 INFO   [c.t.p.service.AppUserService] - UMK cifrada com a senha do usuario (wrap concluido).
+16:56:09.709 INFO   [c.t.p.crypto.HashService] - === [INICIO] Generate SHA-256 hash (bytes) ===
+16:56:09.709 INFO   [c.t.p.crypto.HashService] - Hash SHA-256 gerado com sucesso. Tamanho do digest: 32 bytes, formato Base64: 44 caracteres.
+16:56:09.709 INFO   [c.t.p.crypto.HashService] - [FIM] Generate SHA-256 hash (bytes) | Tempo total: 0 ms
+16:56:09.711 INFO   [c.t.p.crypto.JsonEncryptionService] - === [INICIO] Encrypt DTO to encrypted_data (AppUserClearData) ===
+16:56:09.711 INFO   [c.t.p.crypto.JsonEncryptionService] - Iniciando cifragem do DTO para armazenamento seguro. Tipo: AppUserClearData
+16:56:09.714 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] T_enc | Encrypt operation (AES-256-GCM) ===
+16:56:09.715 INFO   [c.t.p.crypto.IVGeneratorService] - === [INICIO] Generate GCM IV (byte array) ===
+16:56:09.715 INFO   [c.t.p.crypto.IVGeneratorService] - IV gerado com sucesso. Tamanho: 12 bytes.
+16:56:09.715 INFO   [c.t.p.crypto.IVGeneratorService] - [FIM] Generate GCM IV (byte array) | Tempo total: 0 ms
+16:56:09.715 INFO   [c.t.p.crypto.CryptoService] - Cifragem concluida com sucesso. Tamanho do ciphertext: 255 bytes
+16:56:09.716 INFO   [c.t.p.crypto.CryptoService] - [FIM] T_enc | Encrypt operation (AES-256-GCM) | Tempo total: 2 ms
+16:56:09.716 INFO   [c.t.p.crypto.JsonEncryptionService] - Cifragem do DTO concluida. Tamanho do encrypted_data: 442 caracteres.
+16:56:09.716 INFO   [c.t.p.crypto.JsonEncryptionService] - [FIM] Encrypt DTO to encrypted_data (AppUserClearData) | Tempo total: 5 ms
+16:56:09.833 INFO   [c.t.p.service.AppUserService] - Registro de usuario concluido com sucesso. ID: 1
+16:56:09.833 INFO   [c.t.p.service.AppUserService] - [FIM] Register new user | Tempo total: 223 ms
+16:56:09.833 INFO   [c.t.p.c.PasswordManagerController] - Usuario registrado com sucesso | ID: 1
+16:56:09.833 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Registro de Usuario | Tempo total: 223 ms
+16:56:09.833 INFO   [c.tcc.password_manager.cli.CliRunner] - Novo usuario registrado com ID 1
+16:56:15.951 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Login de Usuario ===
+16:56:15.951 INFO   [c.t.p.session.SessionManager] - === [INICIO] User session login ===
+16:56:15.951 INFO   [c.t.p.session.SessionManager] - Iniciando autenticacao para o usuario ID: 1
+16:56:16.005 INFO   [c.t.p.crypto.PasswordKeyDerivation] - === [INICIO] Derive key from master password (simplified) ===
+16:56:16.005 INFO   [c.t.p.crypto.PasswordKeyDerivation] - Iniciando derivacao de chave a partir da senha mestre.
+16:56:16.005 INFO   [c.t.p.crypto.PasswordKeyDerivation] - [FIM] Derive key from master password (simplified) | Tempo total: 0 ms
+16:56:16.043 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] Decrypt operation (AES-256-GCM) ===
+16:56:16.044 INFO   [c.t.p.crypto.CryptoService] - Decifragem concluida com sucesso. Tamanho do plaintext: 32 bytes
+16:56:16.044 INFO   [c.t.p.crypto.CryptoService] - [FIM] Decrypt operation (AES-256-GCM) | Tempo total: 1 ms
+16:56:16.045 INFO   [c.t.p.crypto.HashService] - === [INICIO] Generate SHA-256 hash (bytes) ===
+16:56:16.045 INFO   [c.t.p.crypto.HashService] - Hash SHA-256 gerado com sucesso. Tamanho do digest: 32 bytes, formato Base64: 44 caracteres.
+16:56:16.045 INFO   [c.t.p.crypto.HashService] - [FIM] Generate SHA-256 hash (bytes) | Tempo total: 0 ms
+16:56:16.045 INFO   [c.t.p.session.SessionManager] - Sessao autenticada com sucesso para o usuario ID: 1
+16:56:16.045 INFO   [c.t.p.session.SessionManager] - [FIM] User session login | Tempo total: 94 ms
+16:56:16.045 INFO   [c.t.p.c.PasswordManagerController] - Login realizado com sucesso | User ID: 1
+16:56:16.045 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Login de Usuario | Tempo total: 94 ms
+16:56:16.046 INFO   [c.tcc.password_manager.cli.CliRunner] - Login bem-sucedido para o usuario ID 1
+16:56:37.015 INFO   [c.t.p.service.AppUserService] - === [INICIO] Find user by ID ===
+16:56:37.018 INFO   [c.t.p.service.AppUserService] - Usuario encontrado para o ID: 1
+16:56:37.019 INFO   [c.t.p.service.AppUserService] - [FIM] Find user by ID | Tempo total: 4 ms
+16:56:37.022 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Cadastro de Credencial (Facebook) ===
+16:56:37.023 INFO   [c.t.p.crypto.JsonEncryptionService] - === [INICIO] Encrypt DTO to encrypted_data (String) ===
+16:56:37.023 INFO   [c.t.p.crypto.JsonEncryptionService] - Iniciando cifragem do DTO para armazenamento seguro. Tipo: String
+16:56:37.029 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] T_enc | Encrypt operation (AES-256-GCM) ===
+16:56:37.029 INFO   [c.t.p.crypto.IVGeneratorService] - === [INICIO] Generate GCM IV (byte array) ===
+16:56:37.030 INFO   [c.t.p.crypto.IVGeneratorService] - IV gerado com sucesso. Tamanho: 12 bytes.
+16:56:37.030 INFO   [c.t.p.crypto.IVGeneratorService] - [FIM] Generate GCM IV (byte array) | Tempo total: 0 ms
+16:56:37.031 INFO   [c.t.p.crypto.CryptoService] - Cifragem concluida com sucesso. Tamanho do ciphertext: 14 bytes
+16:56:37.031 INFO   [c.t.p.crypto.CryptoService] - [FIM] T_enc | Encrypt operation (AES-256-GCM) | Tempo total: 2 ms
+16:56:37.033 INFO   [c.t.p.crypto.JsonEncryptionService] - Cifragem do DTO concluida. Tamanho do encrypted_data: 122 caracteres.
+16:56:37.033 INFO   [c.t.p.crypto.JsonEncryptionService] - [FIM] Encrypt DTO to encrypted_data (String) | Tempo total: 10 ms
+16:56:37.034 INFO   [c.t.p.c.PasswordManagerController] - Criptografia concluida | Tamanho: 122 bytes
+16:56:37.034 INFO   [c.t.p.service.FragmentationService] - === [INICIO] T_frag | Fragmentation operation ===
+16:56:37.036 INFO   [c.t.p.service.FragmentationService] - Fragmentacao concluida. Fragmento 1: 11 chars, Fragmento 2: 111 chars
+16:56:37.036 INFO   [c.t.p.service.FragmentationService] - [FIM] T_frag | Fragmentation operation | Tempo total: 2 ms
+16:56:37.036 INFO   [c.t.p.c.PasswordManagerController] - Fragmentacao concluida | Fragmentos: 2
+16:56:37.036 INFO   [c.t.p.service.BlockchainService] - === [INICIO] T_store | Store fragments in blockchains ===
+16:56:37.036 INFO   [c.t.p.service.BlockchainService] - Iniciando gravacao dos fragmentos nas blockchains para o ID: a6880cfc-caa1-4973-8f8b-668c2f029f41
+16:56:37.038 INFO   [c.t.p.connector.FabricConnector] - === [INICIO] Connect to Fabric network (org1) ===
+16:56:37.038 INFO   [c.t.p.connector.FabricConnector] - Solicitacao de contrato para a organizacao 'org1' e chaincode 'passwordmanager'.
+16:56:40.819 INFO   [c.t.p.connector.FabricConnector] - Conexao estabelecida com sucesso. Contrato obtido para 'org1'.
+16:56:40.820 INFO   [c.t.p.connector.FabricConnector] - [FIM] Connect to Fabric network (org1) | Tempo total: 3,782 s
+16:56:43.438 INFO   [c.t.p.service.BlockchainService] - Fragmento 1 gravado com sucesso na Org1.
+16:56:43.439 INFO   [c.t.p.connector.FabricConnector] - === [INICIO] Connect to Fabric network (org2) ===
+16:56:43.439 INFO   [c.t.p.connector.FabricConnector] - Solicitacao de contrato para a organizacao 'org2' e chaincode 'passwordmanager'.
+16:56:43.989 INFO   [c.t.p.connector.FabricConnector] - Conexao estabelecida com sucesso. Contrato obtido para 'org2'.
+16:56:43.990 INFO   [c.t.p.connector.FabricConnector] - [FIM] Connect to Fabric network (org2) | Tempo total: 551 ms
+16:56:46.345 INFO   [c.t.p.service.BlockchainService] - Fragmento 2 gravado com sucesso na Org2.
+16:56:46.345 INFO   [c.t.p.service.BlockchainService] - Fragmentos gravados com sucesso em ambas as blockchains.
+16:56:46.345 INFO   [c.t.p.service.BlockchainService] - [FIM] T_store | Store fragments in blockchains | Tempo total: 9,309 s
+16:56:46.345 INFO   [c.t.p.c.PasswordManagerController] - Fragmentos armazenados nas blockchains | ID logico: a6880cfc-caa1-4973-8f8b-668c2f029f41
+16:56:46.350 INFO   [c.t.p.s.PasswordReferenceService] - === [INICIO] Encrypt and persist password reference ===
+16:56:46.350 INFO   [c.t.p.s.PasswordReferenceService] - Iniciando processo de cifragem e persistencia de credencial para o usuario ID: 1
+16:56:46.350 INFO   [c.t.p.crypto.JsonEncryptionService] - === [INICIO] Encrypt DTO to encrypted_data (PasswordReferenceClearData) ===
+16:56:46.350 INFO   [c.t.p.crypto.JsonEncryptionService] - Iniciando cifragem do DTO para armazenamento seguro. Tipo: PasswordReferenceClearData
+16:56:46.351 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] T_enc | Encrypt operation (AES-256-GCM) ===
+16:56:46.352 INFO   [c.t.p.crypto.IVGeneratorService] - === [INICIO] Generate GCM IV (byte array) ===
+16:56:46.352 INFO   [c.t.p.crypto.IVGeneratorService] - IV gerado com sucesso. Tamanho: 12 bytes.
+16:56:46.353 INFO   [c.t.p.crypto.IVGeneratorService] - [FIM] Generate GCM IV (byte array) | Tempo total: 0 ms
+16:56:46.353 INFO   [c.t.p.crypto.CryptoService] - Cifragem concluida com sucesso. Tamanho do ciphertext: 462 bytes
+16:56:46.353 INFO   [c.t.p.crypto.CryptoService] - [FIM] T_enc | Encrypt operation (AES-256-GCM) | Tempo total: 1 ms
+16:56:46.354 INFO   [c.t.p.crypto.JsonEncryptionService] - Cifragem do DTO concluida. Tamanho do encrypted_data: 718 caracteres.
+16:56:46.354 INFO   [c.t.p.crypto.JsonEncryptionService] - [FIM] Encrypt DTO to encrypted_data (PasswordReferenceClearData) | Tempo total: 4 ms
+16:56:46.363 INFO   [c.t.p.s.PasswordReferenceService] - Credencial persistida com sucesso. ID gerado: 1
+16:56:46.363 INFO   [c.t.p.s.PasswordReferenceService] - [FIM] Encrypt and persist password reference | Tempo total: 13 ms
+16:56:46.363 INFO   [c.t.p.c.PasswordManagerController] - Credencial 'Facebook' registrada com sucesso | ID: 1
+16:56:46.363 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Cadastro de Credencial (Facebook) | Tempo total: 9,341 s
+16:56:46.364 INFO   [c.tcc.password_manager.cli.CliRunner] - Nova credencial 'Facebook' registrada (ID 1).
+17:11:18.839 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Listagem de Credenciais ===
+17:11:18.840 INFO   [c.t.p.s.PasswordReferenceService] - === [INICIO] Find password references by user ID ===
+17:11:19.115 INFO   [c.t.p.s.PasswordReferenceService] - Consulta concluida. Total de registros encontrados para o usuario 1: 1
+17:11:19.115 INFO   [c.t.p.s.PasswordReferenceService] - [FIM] Find password references by user ID | Tempo total: 275 ms
+17:11:19.115 INFO   [c.t.p.c.PasswordManagerController] - Total de credenciais encontradas: 1
+17:11:19.116 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Listagem de Credenciais | Tempo total: 276 ms
+17:11:19.116 INFO   [c.tcc.password_manager.cli.CliRunner] - Listagem concluida. Total de credenciais: 1
+17:11:23.096 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Logout de Usuario ===
+17:11:23.096 INFO   [c.t.p.session.SessionManager] - === [INICIO] User session logout ===
+17:11:23.096 INFO   [c.t.p.session.SessionManager] - Encerrando sessao do usuario ID: 1
+17:11:23.096 INFO   [c.t.p.session.SessionManager] - Sessao encerrada com sucesso.
+17:11:23.096 INFO   [c.t.p.session.SessionManager] - [FIM] User session logout | Tempo total: 0 ms
+17:11:23.096 INFO   [c.t.p.c.PasswordManagerController] - Logout realizado com sucesso.
+17:11:23.096 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Logout de Usuario | Tempo total: 0 ms
+17:11:23.097 INFO   [c.tcc.password_manager.cli.CliRunner] - Logout executado com sucesso.
+17:11:24.955 INFO   [c.tcc.password_manager.cli.CliRunner] - Encerrando execucao do CLI pelo usuario.
+17:11:24.955 INFO   [c.tcc.password_manager.cli.CliRunner] - CLI encerrada com seguranca.

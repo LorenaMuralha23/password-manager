@@ -1,0 +1,56 @@
+CT01 — Cadastro e Armazenamento de Credencial
+-------------------------------------------------------
+🧪 Objetivo:
+Validar o fluxo completo de criptografia, fragmentação e armazenamento
+de uma credencial, garantindo que o processo siga a arquitetura proposta
+(criptografia AES-256-GCM, fragmentação dupla e armazenamento distribuído
+em duas blockchains distintas).
+
+⚙️ Procedimento:
+1. Iniciar a CLI do Password Manager.
+2. Registrar novo usuário:
+   - Senha mestre: Senha-12345
+   - MFA: N/A
+3. Efetuar login:
+   - ID: 1
+   - Senha: Senha-12345
+4. Adicionar credencial:
+   - Nome: Facebook
+   - Usuário: 1
+   - Senha: Senha1-12345
+5. Observar logs e registrar eventos.
+6. Encerrar sessão (logout).
+
+📄 Evidências:
+- Log salvo em: /tests/functional/test-functional-01-register.log
+- Saídas principais observadas:
+  - 🔐 Criptografia concluída (AES-256-GCM)
+  - ✂️ Fragmentação concluída (2 fragmentos)
+  - 🧱 Armazenamento em Org1 e Org2
+  - ⏱️ Tempo total de armazenamento (T_store): 9.341 s
+  - ✅ Credencial persistida com sucesso (ID: 1)
+  - Sessão encerrada com segurança
+
+📊 Métricas coletadas:
+| Operação | Tempo (ms ou s) |
+|-----------|----------------|
+| T_enc     | 46 ms |
+| T_frag    | 2 ms |
+| T_store   | 9.341 s |
+| T_total   | ≈ 9.4 s |
+
+✅ Resultado esperado:
+- Criação de usuário e armazenamento de credencial sem erros.
+- Dados cifrados e fragmentados corretamente.
+- Nenhum dado sensível visível no log ou banco.
+
+🧾 Resultado obtido:
+- Sucesso total.
+- Todas as etapas (criptografia, fragmentação e armazenamento) executadas conforme o modelo.
+- Tempos registrados compatíveis com expectativas da arquitetura.
+
+📘 Conclusão:
+O sistema executou corretamente o fluxo de cadastro e armazenamento de credenciais,
+confirmando o funcionamento do modelo descentralizado proposto. As métricas coletadas
+serão utilizadas na Seção 4.3 (Testes de Desempenho) e as evidências serão incluídas
+na Seção 4.1 (Testes Funcionais).
