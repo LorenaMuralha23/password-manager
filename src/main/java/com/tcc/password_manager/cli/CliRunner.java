@@ -185,7 +185,7 @@ public class CliRunner {
         System.out.println("");
         System.out.println("""
         ---------------------------------------------------------
-        Password Manager CLI  ▪  AES-256-GCM ▪ Dual-Blockchain
+        Password Manager CLI  -  AES-256-GCM - Dual-Blockchain
         ---------------------------------------------------------""");
     }
 

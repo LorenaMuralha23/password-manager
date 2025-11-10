@@ -1,15 +1,17 @@
 package com.tcc.password_manager.util;
 
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Utilitário para medição padronizada de tempo de execução e registro de logs.
  * 
- * 🔹 Objetivos:
+ * Objetivos:
  * - Medir o tempo total de execução de operações (ex.: criptografia, fragmentação, armazenamento)
  * - Padronizar mensagens de início e fim em todas as classes
  * - Evitar repetição de código e garantir clareza analítica nos testes
+ * - Permitir rastreamento experimental via rótulos curtos (T_enc, T_frag, T_store, T_rec)
  * 
  * Exemplo de uso:
  * 
@@ -21,9 +23,20 @@ import org.slf4j.LoggerFactory;
  * } finally {
  *     timer.stopAndLog(log);
  * }
+ * 
+ * Exemplo de saída:
+ * 
+ * [FIM] T_enc | Encrypt operation (AES-256-GCM) | Tempo total: 38 ms
  */
 public class LogTimer {
 
+    private static final Map<String, String> LABELS = Map.of(
+        "Encrypt operation (AES-256-GCM)", "T_enc",
+        "Fragmentation operation", "T_frag",
+        "Store fragments in blockchains", "T_store",
+        "Retrieve fragments from blockchains", "T_rec"
+    );
+    
     private final long startTime;
     private final String description;
 
@@ -37,7 +50,13 @@ public class LogTimer {
      */
     public static LogTimer start(String description) {
         Logger log = LoggerFactory.getLogger(getCallerClassName());
-        log.info("=== [INICIO] {} ===", description);
+        String shortLabel = LABELS.getOrDefault(description, null);
+
+        if (shortLabel != null)
+            log.info("=== [INICIO] {} | {} ===", shortLabel, description);
+        else
+            log.info("=== [INICIO] {} ===", description);
+
         return new LogTimer(description);
     }
 
@@ -47,7 +66,12 @@ public class LogTimer {
     public void stopAndLog(Logger log) {
         long elapsed = System.currentTimeMillis() - startTime;
         String formattedTime = formatTime(elapsed);
-        log.info("[FIM] {} | Tempo total: {}", description, formattedTime);
+        String shortLabel = LABELS.getOrDefault(description, null);
+
+        if (shortLabel != null)
+            log.info("[FIM] {} | {} | Tempo total: {}", shortLabel, description, formattedTime);
+        else
+            log.info("[FIM] {} | Tempo total: {}", description, formattedTime);
     }
 
     /**
@@ -57,7 +81,12 @@ public class LogTimer {
         Logger log = LoggerFactory.getLogger(getCallerClassName());
         long elapsed = System.currentTimeMillis() - startTime;
         String formattedTime = formatTime(elapsed);
-        log.info("[FIM] {} | Tempo total: {}", description, formattedTime);
+        String shortLabel = LABELS.getOrDefault(description, null);
+
+        if (shortLabel != null)
+            log.info("[FIM] {} | {} | Tempo total: {}", shortLabel, description, formattedTime);
+        else
+            log.info("[FIM] {} | Tempo total: {}", description, formattedTime);
     }
 
     /**
@@ -76,7 +105,6 @@ public class LogTimer {
      */
     private static Class<?> getCallerClassName() {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        // Pula as primeiras posições que pertencem à própria classe LogTimer
         for (StackTraceElement element : stackTrace) {
             if (!element.getClassName().equals(LogTimer.class.getName())
                     && !element.getClassName().startsWith("java.lang")) {
