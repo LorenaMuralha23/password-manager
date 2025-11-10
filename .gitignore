@@ -33,5 +33,7 @@ build/
 
 /logs/password-manager.log
 
+/data/passwordmanager-db.mv.db
+
 ### VS Code ###
 .vscode/

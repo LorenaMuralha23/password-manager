@@ -1,0 +1,75 @@
+===========================================================
+CASO DE TESTE FUNCIONAL — CT03
+===========================================================
+
+🧩 Identificação:
+CT03 — Verificação da Persistência e Cifragem no Banco H2
+
+🧪 Objetivo:
+Validar se as credenciais armazenadas localmente no banco H2 permanecem
+totalmente cifradas e indecifráveis, garantindo que nenhuma informação
+sensível (usuário, senha, identificadores) seja persistida em texto claro.
+Este teste confirma o isolamento entre os dados locais e os fragmentos
+armazenados nas blockchains.
+
+⚙️ Procedimento:
+1. Iniciar a aplicação (caso necessário):
+   java -jar target/password-manager.jar
+
+2. Acessar o console do H2:
+   URL: http://localhost:8080/h2-console
+   JDBC URL: jdbc:h2:~/password_manager_db
+   Usuário: conforme application.properties
+
+3. Executar a consulta SQL:
+   SELECT * FROM PASSWORDS_REF;
+
+4. Observar os campos retornados:
+   - ENCRYPTED_DATA
+   - IV
+   - DATA_REF
+   - USER_ID
+   - ID
+
+5. Registrar a evidência visual:
+   - Captura de tela do resultado da consulta.
+   - Verificar se os campos contêm apenas dados cifrados e ilegíveis.
+
+📄 Evidências:
+- Captura de tela: /tests/functional/h2-verificacao.png
+- Observação importante:
+  Nenhum log foi gerado neste teste, pois a verificação ocorreu diretamente
+  na interface web do H2, sem execução de funcionalidades pela aplicação.
+
+- Resultado visual do campo ENCRYPTED_DATA (trecho parcial):
+  {"alg":"AES-GCM-256","ver":1,"iv":"bhBOKDWmJCi6d0Tt","ciphertext":"a2btjexGNNA0I9M...<truncado>"}
+
+📊 Métricas e observações:
+| Item Verificado | Situação | Observação |
+|------------------|-----------|-------------|
+| Campos cifrados (encrypted_data, iv) | ✅ OK | Apenas dados codificados em Base64 |
+| Campos de referência (data_ref, user_id) | ✅ OK | Contêm UUIDs e IDs numéricos válidos |
+| Campos legíveis indevidos | ❌ Nenhum encontrado | Nenhuma informação sensível visível |
+| Algoritmo detectado | ✅ AES-GCM-256 | Confirmado nos metadados do JSON |
+
+✅ Resultado esperado:
+O banco H2 deve armazenar apenas dados cifrados e identificadores.
+Nenhum campo deve conter informações legíveis ou dados sensíveis
+em texto claro.
+
+🧾 Resultado obtido:
+A inspeção visual do banco H2 confirmou que o campo ENCRYPTED_DATA contém
+apenas dados cifrados, com metadados “AES-GCM-256”, “iv” e “ciphertext”.
+Nenhum dado legível foi identificado, e não houve geração de logs,
+visto que a análise foi feita diretamente via console H2.
+
+📘 Conclusão:
+O teste CT03 comprovou que a camada de persistência local é segura e
+conforme o modelo de segurança proposto. A cifragem AES-256-GCM garante
+confidencialidade e integridade dos dados em repouso. Este teste encerra
+o grupo de Testes Funcionais (Seção 4.1) e fornece base para os Testes
+de Segurança (Seção 4.2).
+
+📎 Status final:
+✅ Sucesso
+===========================================================

@@ -1,10 +1,15 @@
+===========================================================
+CASO DE TESTE FUNCIONAL — CT01
+===========================================================
+
+🧩 Identificação:
 CT01 — Cadastro e Armazenamento de Credencial
--------------------------------------------------------
+
 🧪 Objetivo:
 Validar o fluxo completo de criptografia, fragmentação e armazenamento
-de uma credencial, garantindo que o processo siga a arquitetura proposta
-(criptografia AES-256-GCM, fragmentação dupla e armazenamento distribuído
-em duas blockchains distintas).
+de uma credencial, garantindo que o processo siga a arquitetura proposta:
+criptografia AES-256-GCM, fragmentação dupla e armazenamento distribuído
+em duas blockchains distintas (Org1 e Org2).
 
 ⚙️ Procedimento:
 1. Iniciar a CLI do Password Manager.
@@ -13,7 +18,7 @@ em duas blockchains distintas).
    - MFA: N/A
 3. Efetuar login:
    - ID: 1
-   - Senha: Senha-12345
+   - Senha mestre: Senha-12345
 4. Adicionar credencial:
    - Nome: Facebook
    - Usuário: 1
@@ -32,25 +37,29 @@ em duas blockchains distintas).
   - Sessão encerrada com segurança
 
 📊 Métricas coletadas:
-| Operação | Tempo (ms ou s) |
-|-----------|----------------|
-| T_enc     | 46 ms |
-| T_frag    | 2 ms |
-| T_store   | 9.341 s |
-| T_total   | ≈ 9.4 s |
+| Operação | Tempo (ms/s) | Observações |
+|-----------|--------------|-------------|
+| T_enc     | 46 ms | Criptografia AES-256-GCM |
+| T_frag    | 2 ms | Fragmentação em 2 partes |
+| T_store   | 9.341 s | Armazenamento dual-blockchain |
+| T_total   | ≈ 9.4 s | Tempo total do fluxo |
 
 ✅ Resultado esperado:
-- Criação de usuário e armazenamento de credencial sem erros.
-- Dados cifrados e fragmentados corretamente.
-- Nenhum dado sensível visível no log ou banco.
+O sistema deve cadastrar o usuário e armazenar a credencial de forma segura,
+com criptografia e fragmentação corretas, sem erros nem dados legíveis
+no banco local ou nos logs.
 
 🧾 Resultado obtido:
-- Sucesso total.
-- Todas as etapas (criptografia, fragmentação e armazenamento) executadas conforme o modelo.
-- Tempos registrados compatíveis com expectativas da arquitetura.
+Sucesso total — todas as etapas (criptografia, fragmentação e armazenamento)
+foram executadas conforme o modelo. Os logs registraram mensagens padronizadas
+e os tempos de operação ficaram dentro do esperado.
 
 📘 Conclusão:
 O sistema executou corretamente o fluxo de cadastro e armazenamento de credenciais,
-confirmando o funcionamento do modelo descentralizado proposto. As métricas coletadas
-serão utilizadas na Seção 4.3 (Testes de Desempenho) e as evidências serão incluídas
-na Seção 4.1 (Testes Funcionais).
+confirmando o funcionamento do modelo descentralizado proposto.
+As métricas coletadas serão utilizadas na Seção 4.3 (Testes de Desempenho)
+e as evidências correspondem à Seção 4.1 (Testes Funcionais).
+
+📎 Status final:
+✅ Sucesso
+===========================================================

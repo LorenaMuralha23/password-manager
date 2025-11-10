@@ -1,0 +1,66 @@
+===========================================================
+CASO DE TESTE FUNCIONAL — CT02
+===========================================================
+
+🧩 Identificação:
+CT02 — Recuperação e Decifragem de Credencial
+
+🧪 Objetivo:
+Validar a capacidade do sistema de recuperar e reconstruir credenciais armazenadas,
+realizando a junção dos fragmentos distribuídos em duas blockchains e a posterior
+decifragem com a User Master Key (UMK) derivada da senha mestre do usuário.
+
+⚙️ Procedimento:
+1. Iniciar CLI do Password Manager.
+2. Efetuar login:
+   - ID: 1
+   - Senha mestre: Senha-12345
+3. Listar credenciais existentes:
+   - Resultado esperado: 1 credencial cadastrada (“Facebook”)
+4. Recuperar senha (modo normal):
+   - Opção [6] RECUPERAR SENHA
+   - ID da credencial: 1
+5. Recuperar senha (modo texto claro):
+   - Opção [7] RECUPERAR SENHA (TEXTO CLARO)
+   - ID da credencial: 1
+6. Verificar se a senha exibida corresponde ao valor original: “Senha1-12345”
+7. Encerrar a sessão (logout).
+
+📄 Evidências:
+- Log salvo em: /tests/functional/test-functional-02-recover.log
+- Saídas principais observadas:
+  - 🔎 Recuperação de metadados e fragmentos (Org1 / Org2)
+  - 🔐 Decifragem AES-256-GCM concluída
+  - 🧩 Junção dos fragmentos (Join operation)
+  - ✅ Senha recuperada com sucesso (texto claro: “Senha1-12345”)
+  - ⏱️ Tempo total de recuperação (T_rec): 7.729 s
+  - ⏱️ Tempo total de decifragem completa (T_total): 1.007 s
+  - Sessão encerrada com segurança
+
+📊 Métricas coletadas:
+| Operação | Tempo (ms/s) | Observações |
+|-----------|--------------|-------------|
+| T_rec     | 7.729 s | Recuperação de fragmentos nas blockchains |
+| T_join    | 1 ms | Recombinação dos fragmentos |
+| T_dec     | 2 ms | Decifragem da senha |
+| T_total   | ≈ 1.0 s | Tempo total da operação “texto claro” |
+
+✅ Resultado esperado:
+O sistema deve recuperar os fragmentos das duas blockchains, recompor o ciphertext,
+decifrar a senha original com a UMK e exibir o valor em texto claro. Nenhum erro ou
+dado sensível deve aparecer no log fora do contexto criptográfico.
+
+🧾 Resultado obtido:
+Sucesso total — os fragmentos foram localizados, recombinados e decifrados
+corretamente. A senha exibida coincidiu com o valor original (“Senha1-12345”),
+confirmando a integridade da arquitetura dual-blockchain e da chave derivada.
+
+📘 Conclusão:
+O teste confirmou que o sistema é capaz de reconstruir credenciais completas a partir
+de fragmentos cifrados e isolados, demonstrando a consistência entre as operações
+de armazenamento e recuperação. A integridade dos dados e o tempo de resposta
+foram compatíveis com o modelo proposto.
+
+📎 Status final:
+✅ Sucesso
+===========================================================
