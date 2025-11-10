@@ -33,11 +33,13 @@
     </appender>
 
     <!-- === Definição dos níveis de log === -->
+    <!-- Suprime detalhes internos do Spring -->
     <logger name="org.springframework" level="WARN"/>
-<!--    <logger name="com.tcc.password_manager" level="INFO"/>-->
-    <logger name="com.tcc.password_manager" level="DEBUG"/>
-    <logger name="com.tcc.password_manager.service.FragmentationService" level="TRACE"/>
     
+    <!-- Nível padrão do seu app -->
+    <logger name="com.tcc.password_manager" level="INFO"/>
+    
+    <!-- LogTimer: mantém gravação em arquivo (para métricas) -->
     <logger name="com.tcc.password_manager.util.LogTimer" level="INFO" additivity="false">
         <appender-ref ref="FILE" />
     </logger>

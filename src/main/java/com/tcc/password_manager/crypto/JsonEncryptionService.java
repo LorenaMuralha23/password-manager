@@ -109,7 +109,7 @@ public class JsonEncryptionService {
 
             // 3. Reconstituir o DTO a partir do JSON
             T dto = mapper.readValue(plaintextJson, dtoClass);
-            log.info("Decifragem concluida. DTO {} reconstruído com sucesso.", dtoName);
+            log.info("Decifragem concluida. DTO {} reconstruido com sucesso.", dtoName);
             return dto;
         } catch (Exception e) {
             log.error("Falha ao decifrar encrypted_data para DTO {}: {}", dtoName, e.getMessage());

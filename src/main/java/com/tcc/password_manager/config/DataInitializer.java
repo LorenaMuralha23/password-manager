@@ -18,7 +18,8 @@ import org.springframework.context.annotation.Configuration;
  * Registro e login do usuário - Criptografia local (UMK) - Fragmentação e
  * distribuição blockchain - Persistência e recuperação de dados
  */
-@Configuration
+//@Configuration
+// Descomentar a linha acima fará com que a classe seja executada junto com o Spring
 public class DataInitializer {
 
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
