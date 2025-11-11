@@ -1,0 +1,74 @@
+===========================================================
+📘 RESUMO CONSOLIDADO — TESTES FUNCIONAIS
+===========================================================
+
+🧩 Objetivo geral:
+Validar o correto funcionamento do sistema em sua totalidade, garantindo que o fluxo de registro, criptografia, fragmentação, armazenamento distribuído e recuperação de credenciais ocorra conforme a modelagem proposta, sem falhas e sem exposição de dados sensíveis em texto claro.
+
+Os testes funcionais têm como propósito comprovar a aderência prática do protótipo à arquitetura proposta — com ênfase na integração entre criptografia local (AES-256-GCM), fragmentação dupla e armazenamento distribuído em duas blockchains privadas (Org1 e Org2).
+
+-----------------------------------------------------------
+CT01 — Cadastro e armazenamento de credencial
+-----------------------------------------------------------
+🧪 Objetivo:
+Validar o processo de registro de usuário e armazenamento de uma nova credencial, confirmando as etapas de cifragem, fragmentação e persistência distribuída.
+
+🧭 Resultado:
+- Registro de usuário concluído com sucesso.
+- Credencial cifrada localmente (AES-256-GCM).
+- Fragmentação gerou dois fragmentos independentes.
+- Armazenamento distribuído realizado nas blockchains Org1 e Org2.
+- Banco H2 persistiu metadados cifrados e consistentes.
+- Tempo total de operação: ~9,4 s.
+
+📎 Status: ✅ Sucesso  
+💡 Evidência: `/tests/functional/test-functional-01-register.log`  
+
+-----------------------------------------------------------
+CT02 — Recuperação e decifragem de credencial
+-----------------------------------------------------------
+🧪 Objetivo:
+Verificar a capacidade do sistema de reconstruir corretamente uma credencial armazenada, a partir da recuperação dos fragmentos nas blockchains e sua posterior decifragem local.
+
+🧭 Resultado:
+- Fragmentos obtidos com sucesso de Org1 e Org2.
+- Recombinação e decifragem executadas sem erro.
+- Senha original (“Senha1-12345”) recuperada com exatidão.
+- Operação concluída com tempo médio de ~1,0 s.
+- Nenhum dado sensível persistido fora do ambiente local.
+
+📎 Status: ✅ Sucesso  
+💡 Evidência: `/tests/functional/test-functional-02-recover.log`  
+
+-----------------------------------------------------------
+CT03 — Verificação da persistência cifrada (H2)
+-----------------------------------------------------------
+🧪 Objetivo:
+Confirmar que os dados armazenados no banco local H2 permanecem integralmente cifrados e que nenhum campo contém informações sensíveis legíveis.
+
+🧭 Resultado:
+- Consulta SQL revelou apenas estruturas JSON cifradas.
+- Campos `ENCRYPTED_DATA`, `IV` e `DATA_REF` sem conteúdo legível.
+- Integridade dos metadados confirmada.
+- Figura capturada na interface do H2: `h2-verificacao.png`.
+
+📎 Status: ✅ Sucesso  
+💡 Evidência: `/tests/functional/h2-verificacao.png`  
+
+-----------------------------------------------------------
+📊 Conclusão geral:
+Os três cenários testados (CT01, CT02 e CT03) comprovaram o **funcionamento integral e a conformidade da aplicação com a modelagem proposta**:
+
+| Dimensão avaliada                | Resultado observado                              |
+|----------------------------------|--------------------------------------------------|
+| Criptografia local (AES-256-GCM) | Execução correta e sem falhas                    |
+| Fragmentação e distribuição       | Dois fragmentos gerados e armazenados com sucesso|
+| Recuperação e decifragem         | Credencial reconstruída e exibida corretamente   |
+| Banco local (H2)                 | Dados totalmente cifrados e íntegros             |
+| Logs e métricas de execução      | Tempos consistentes e sem erros                  |
+
+✅ **Conclusão final:**  
+O sistema demonstrou total aderência à arquitetura de referência, executando de forma correta e segura as etapas de criptografia, fragmentação, armazenamento distribuído e recuperação.  
+As evidências comprovam que não há exposição de dados sensíveis em nenhum ponto do processo e que o modelo proposto de **gestão descentralizada de credenciais** é funcional e reproduzível em ambiente real controlado.
+
+===========================================================

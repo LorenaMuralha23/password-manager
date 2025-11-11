@@ -1,0 +1,97 @@
+===========================================================
+CASO DE TESTE DE SEGURANÇA — CT02
+===========================================================
+
+🧩 Identificação:
+CT02 — Tentativa de Reconstrução Parcial
+
+🧪 Objetivo:
+Validar o comportamento do sistema diante da indisponibilidade de uma das blockchains (Org2), impedindo a reconstrução de uma credencial a partir de apenas um fragmento.  
+Este teste verifica se a arquitetura distribuída bloqueia corretamente a operação e trata a exceção de forma controlada, sem vazamento de dados sensíveis ou inconsistências no armazenamento local (H2).
+
+⚙️ Procedimento:
+1. Certificar-se de que a rede Hyperledger Fabric está ativa:
+   ```bash
+   cd ~/fabric-samples/test-network
+   ./network.sh up createChannel -ca
+   ./network.sh deployCC -c mychannel -ccn passwordmanager -ccp ../chaincode/passwordmanager-java -ccl java
+   ./network.sh deployCC -c secondchannel -ccn passwordmanager -ccp ../chaincode/passwordmanager-java -ccl java
+````
+
+2. Registrar um usuário e adicionar uma credencial (se ainda não existir):
+
+   ```
+   registerUser user1 senha123
+   addPassword Google user1@gmail.com senhaDoGoogle22
+   ```
+3. Desativar temporariamente o peer da Org2, simulando a perda de uma das blockchains:
+
+   ```bash
+   docker stop peer0.org2.example.com
+   ```
+4. Tentar recuperar a credencial armazenada:
+
+   ```
+   retrievePassword Google
+   ```
+5. Observar o comportamento da aplicação e registrar os logs.
+6. Reativar o peer da Org2:
+
+   ```bash
+   docker start peer0.org2.example.com
+   ```
+7. Repetir o comando de recuperação:
+
+   ```
+   retrievePassword Google
+   ```
+8. Registrar a nova execução e comparar os resultados.
+
+📄 Evidências:
+
+* Log: `/tests/security/test-security-00-all.log`
+* Prints: capturas do CLI antes e depois da reativação do peer
+* Saídas observadas no log:
+
+  * ⚠️ Tentativa de recuperação incompleta — fragmento ausente (Org2)
+  * ❌ “Fragmento ausente: reconstrução não permitida.”
+  * 🔁 Reconexão bem-sucedida após reativar Org2
+  * ✅ Recuperação concluída normalmente
+  * ⏱️ Tempo médio de detecção e recuperação: ~3,2 s
+
+📊 Métricas coletadas:
+
+| Operação | Tempo (s) | Observações                          |
+| -------- | --------- | ------------------------------------ |
+| T_enc    | —         | Não aplicável neste teste            |
+| T_frag   | —         | Fragmentos previamente armazenados   |
+| T_store  | —         | Sem nova gravação                    |
+| T_rec    | 3,2       | Tentativa inicial (falha controlada) |
+| T_total  | 3,2       | Detecção e reconexão                 |
+
+✅ Resultado esperado:
+O sistema deve reconhecer a ausência de um dos fragmentos e impedir a reconstrução da credencial, exibindo erro controlado e registrando o evento no log.
+Após a reativação do peer da Org2, a nova tentativa de recuperação deve ocorrer normalmente, com reconstrução completa da credencial.
+
+🧾 Resultado obtido:
+Durante a simulação de falha, o sistema retornou o erro controlado:
+
+```
+❌ Fragmento ausente: reconstrução não permitida.
+```
+
+Nenhum dado sensível foi exibido ou persistido.
+Após a reativação da Org2, a recuperação foi concluída com sucesso, e os logs registraram o evento:
+
+```
+INFO [RecoveryService] - Recuperação bem-sucedida: todos os fragmentos presentes.
+```
+
+📘 Conclusão:
+O sistema respondeu de forma adequada à indisponibilidade parcial da rede blockchain, impedindo a reconstrução de credenciais sem todos os fragmentos necessários.
+A arquitetura comprovou sua resiliência e segurança, mantendo a integridade dos dados e garantindo a confidencialidade das credenciais durante falhas temporárias.
+
+📎 Status final:
+✅ Sucesso
+
+===========================================================

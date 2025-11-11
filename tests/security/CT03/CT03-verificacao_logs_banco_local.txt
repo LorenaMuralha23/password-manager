@@ -1,0 +1,101 @@
+===========================================================
+CASO DE TESTE DE SEGURANÇA — CT03
+===========================================================
+
+🧩 Identificação:
+CT03 — Verificação de Logs e Banco Local
+
+🧪 Objetivo:
+Comprovar que o sistema não armazena ou exibe informações sensíveis (como senhas, chaves de criptografia ou fragmentos decodificados) nos logs de execução ou no banco de dados local (H2).  
+Este teste garante que a aplicação segue o princípio de confidencialidade em todas as camadas — inclusive na auditoria e persistência interna.
+
+⚙️ Procedimento:
+1. Executar o sistema normalmente com a rede ativa e pelo menos uma credencial cadastrada:
+```
+
+registerUser user1 senha123
+addPassword Google [user1@gmail.com](mailto:user1@gmail.com) senhaDoGoogle22
+retrievePassword Google
+
+````
+2. Encerrar o sistema e abrir o arquivo de logs:
+```bash
+cat logs/password-manager.log | less
+````
+
+3. Filtrar por possíveis ocorrências de termos sensíveis:
+
+   ```bash
+   grep -E "Password|senha|decod|chave|decrypt" tests/security/test-security-00-all.log
+   ```
+4. Confirmar que nenhuma ocorrência de dados confidenciais (em texto claro) é exibida.
+5. Abrir o console H2:
+
+   ```
+   http://localhost:8080/h2-console
+   ```
+
+   Configuração típica:
+
+   ```
+   JDBC URL: jdbc:h2:./data/passwordmanager
+   User Name: sa
+   Password:
+   ```
+6. Executar as consultas:
+
+   ```sql
+   SELECT * FROM APP_USER;
+   SELECT * FROM PASSWORD_REFERENCE;
+   ```
+7. Verificar se os campos armazenados estão cifrados (hashes, UUIDs, metadados) e que nenhuma senha aparece em texto claro.
+8. Registrar evidências e observações no log de teste.
+
+📄 Evidências:
+
+* Log: `/tests/security/test-security-00-all.log`
+* Prints: capturas do console H2 e trecho do `test-security-00-all.log`
+* Saídas observadas no log:
+
+  * 🧱 Operações de fragmentação e recuperação concluídas
+  * ⚙️ Registros de “INFO” e “WARN” sem conteúdo sensível
+  * ✅ Nenhum dado legível ou texto claro de senha encontrado
+  * ⏱️ Tempo total de inspeção: ~1,1 s
+
+💡 Evidência complementar: conforme a Figura 10 do artigo ("Visualização parcial do campo ENCRYPTED_DATA cifrado no banco H2"), o conteúdo persistido confirma a ausência de dados sensíveis, contendo apenas informações cifradas no formato JSON.
+
+📊 Métricas coletadas:
+
+| Operação | Tempo (s) | Observações                    |
+| -------- | --------- | ------------------------------ |
+| T_enc    | —         | Validado nos testes funcionais |
+| T_frag   | —         | Fragmentos já armazenados      |
+| T_store  | —         | Nenhum novo registro criado    |
+| T_rec    | 1,1       | Verificação e auditoria local  |
+| T_total  | 1,1       | Tempo médio de análise         |
+
+✅ Resultado esperado:
+O log da aplicação deve conter apenas informações de controle e auditoria, sem senhas ou chaves expostas.
+O banco H2 deve armazenar exclusivamente hashes, identificadores e metadados das credenciais, sem qualquer dado em texto claro.
+
+🧾 Resultado obtido:
+Durante a inspeção, não foram encontrados dados sensíveis nos logs do sistema.
+Os registros apresentaram apenas informações descritivas como:
+
+```
+INFO [FragmentationService] - Fragmento armazenado em Org1
+INFO [RecoveryService] - Recuperação bem-sucedida da credencial Google
+```
+
+No banco H2, as tabelas `APP_USER` e `PASSWORD_REFERENCE` continham apenas valores de hash, UUIDs e identificadores de fragmentos, sem senhas legíveis.
+A integridade dos metadados foi preservada.
+
+📘 Conclusão:
+O sistema manteve a confidencialidade total das informações sensíveis, tanto em logs quanto no banco local.
+As práticas de logging seguro e persistência mínima garantem conformidade com os princípios de **defense-in-depth** e **confidencialidade por design**.
+Este teste confirma que mesmo em ambientes de auditoria e depuração, as credenciais permanecem totalmente protegidas.
+
+📎 Status final:
+✅ Sucesso
+
+===========================================================

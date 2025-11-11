@@ -1,0 +1,65 @@
+===========================================================
+CASO DE TESTE DE RESILIÊNCIA — CT03
+===========================================================
+
+🧩 Identificação:
+CT03 — Reconexão e recuperação automática após falha temporária de peer
+
+🧪 Objetivo:
+Avaliar o comportamento do sistema diante de uma falha temporária em um dos peers da rede blockchain durante o processo de armazenamento de credenciais.  
+O objetivo é verificar se a aplicação é capaz de:
+- detectar a falha de conexão de forma controlada;
+- preservar a integridade dos dados e a continuidade do backend;
+- e restabelecer automaticamente a comunicação após o peer voltar a ficar disponível, sem necessidade de reinicialização manual.
+
+⚙️ Procedimento:
+1. Iniciada a aplicação `PasswordManagerApplication` via Maven (`exec-maven-plugin`).
+2. Efetuado login com o usuário ID=1 e senha mestre `Senha-12345`.
+3. Cadastrada a credencial “Spotify” → operação concluída com sucesso em ambas as blockchains.
+4. Simulada falha temporária: peer da **Org2** desligado via Docker (`docker stop peer0.org2.example.com`).
+5. Tentado novo cadastro de credencial “Strava” → operação falha controladamente, exibindo erro de conexão.
+6. Reativado o peer da Org2 (`docker start peer0.org2.example.com`).
+7. Repetida a operação “Adicionar Senha: Strava” → execução bem-sucedida, com reconexão automática e gravação normal.
+8. Verificada a listagem de credenciais → IDs 1, 33, 34, 65, 97 e 98.
+9. Realizada recuperação da credencial ID=98 → senha decifrada com sucesso.
+10. Encerrada a sessão com logout e fechamento seguro da CLI.
+
+📄 Evidências:
+- Log: `/tests/resilience/test-resilience-03-reconexao.log`
+- Prints: CLI durante a falha e após reconexão
+- Saídas observadas no log:
+  - 🔐 Criptografia e fragmentação concluídas
+  - ⚠️ `ServiceDiscoveryException: Failed to find any endorsers for chaincode passwordmanager`
+  - ❌ `Erro ao adicionar senha: Erro ao armazenar fragmentos nas blockchains`
+  - ✅ `Conexao estabelecida com sucesso. Contrato obtido para 'org2'`
+  - ✅ `Fragmentos gravados com sucesso em ambas as blockchains`
+  - ✅ `Senha recuperada com sucesso | ID: 98`
+  - INFO `[CLI] - CLI encerrada com seguranca`
+
+📊 Métricas observadas:
+| Evento                                   | Tempo (s) | Observação / Comportamento |
+|-------------------------------------------|-----------|-----------------------------|
+| Login inicial                             | 0.19      | Autenticação bem-sucedida |
+| Cadastro “Spotify” (estado normal)        | 9.85      | Operação completa em ambas as blockchains |
+| Cadastro “Strava” (com peer desligado)    | 0.49      | Falha controlada — peer Org2 indisponível |
+| Cadastro “Strava” (após reativação)       | 5.92      | Reconexão automática e sucesso na gravação |
+| Recuperação completa da senha (ID 98)     | 1.15      | Fragmentos recuperados e senha decifrada |
+| Logout e encerramento                     | 0.00      | Sessão finalizada normalmente |
+
+✅ Resultado esperado:
+O sistema deve registrar a falha de comunicação com a Org2 de forma controlada, interromper o armazenamento com segurança, e retomar o funcionamento normal após a reconexão, sem reiniciar o backend nem perder consistência de dados.
+
+🧾 Resultado obtido:
+Durante a primeira tentativa sob falha, o sistema registrou erro de `ServiceDiscoveryException` e interrompeu o fluxo sem corromper dados.  
+Após a reativação do peer, a reconexão foi restabelecida automaticamente, permitindo o cadastro bem-sucedido da mesma credencial (“Strava”) e posterior recuperação completa da senha.  
+O backend permaneceu estável e responsivo durante todo o processo.
+
+📘 Conclusão:
+O comportamento observado confirma a **capacidade de recuperação e tolerância a falhas de rede** do protótipo.  
+O sistema tratou a indisponibilidade temporária de um peer de modo resiliente, mantendo a integridade do banco local, preservando o estado das sessões e restabelecendo a comunicação de forma automática.  
+A operação pós-reconexão validou integralmente o modelo dual-blockchain e o gerenciamento de erros implementado.
+
+📎 Status final:
+✅ Sucesso
+
+===========================================================

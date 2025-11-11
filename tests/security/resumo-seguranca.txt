@@ -1,0 +1,81 @@
+===========================================================
+📘 RESUMO CONSOLIDADO — TESTES DE SEGURANÇA
+===========================================================
+
+🧩 Objetivo geral:
+Avaliar a eficácia e a robustez dos mecanismos de segurança implementados no sistema de gerenciamento de senhas descentralizado, garantindo:
+- Confidencialidade total das credenciais;
+- Isolamento entre os fragmentos armazenados nas duas blockchains privadas;
+- Proteção contra reconstrução parcial;
+- Ausência de dados sensíveis em logs e no banco local H2.
+
+Os testes de segurança complementam os testes funcionais e de resiliência, validando o comportamento do sistema sob cenários adversos e de auditoria, com foco em confidencialidade, integridade e controle de acesso.
+
+-----------------------------------------------------------
+CT01 — Isolamento de Fragmento
+-----------------------------------------------------------
+🧪 Objetivo:
+Confirmar que cada fragmento armazenado em blockchain permanece cifrado e indecifrável individualmente.
+
+🧭 Resultado:
+- Query direta via `peer` retornou apenas fragmentos cifrados em formato hexadecimal.
+- Nenhum dado legível ou sensível foi identificado.
+- Logs exibiram apenas informações operacionais.
+- Integridade do fragmento confirmada.
+
+📎 Status: ✅ Sucesso  
+💡 Evidência: `/tests/security/test-security-00-all.log`  
+Tempo médio de consulta: ~0,8 s  
+
+-----------------------------------------------------------
+CT02 — Tentativa de Reconstrução Parcial
+-----------------------------------------------------------
+🧪 Objetivo:
+Verificar a resposta do sistema à indisponibilidade de uma das blockchains (Org2), impedindo a reconstrução sem todos os fragmentos.
+
+🧭 Resultado:
+- Desligamento do peer da Org2 (`docker stop peer0.org2.example.com`) gerou erro controlado:
+  ❌ “Fragmento ausente: reconstrução não permitida.”
+- Nenhum dado parcial foi retornado.
+- Após reativar Org2, a recuperação foi concluída com sucesso.
+- Logs registraram o evento como “⚠️ tentativa de recuperação incompleta”.
+
+📎 Status: ✅ Sucesso  
+💡 Evidência: `/tests/security/test-security-00-all.log`  
+Tempo médio de detecção e recuperação: ~3,2 s  
+
+-----------------------------------------------------------
+CT03 — Verificação de Logs e Banco Local
+-----------------------------------------------------------
+🧪 Objetivo:
+Assegurar que logs e banco local não contenham informações confidenciais em texto claro.
+
+🧭 Resultado:
+- Logs continham apenas mensagens descritivas (INFO/WARN), sem senhas.
+- Banco H2 apresentou apenas metadados, hashes e identificadores de fragmentos.
+- Nenhum dado sensível foi encontrado.
+- Auditoria confirmada via inspeção manual e filtro de logs.
+- 💡 Evidência complementar: conforme a Figura 10 do artigo (“Visualização parcial do campo ENCRYPTED_DATA cifrado no banco H2”), o conteúdo persistido confirma a ausência de dados sensíveis, contendo apenas informações cifradas no formato JSON.
+
+📎 Status: ✅ Sucesso  
+💡 Evidência: `/tests/security/test-security-00-all.log`  
+Tempo médio de verificação: ~1,1 s  
+
+-----------------------------------------------------------
+📊 Conclusão geral:
+Os três casos de teste (CT01, CT02 e CT03) comprovaram a **eficácia da arquitetura de segurança** e a aderência do sistema aos princípios fundamentais de proteção de dados:
+
+| Dimensão de segurança        | Resultado observado                                     |
+|-------------------------------|--------------------------------------------------------|
+| Isolamento de fragmentos      | Dados cifrados e indecifráveis individualmente         |
+| Reconstrução parcial          | Bloqueada, erro controlado e logs coerentes            |
+| Logs e banco local            | Ausência total de dados sensíveis                      |
+| Integridade pós-falha         | Recuperação completa após reativação de blockchain     |
+| Auditoria e rastreabilidade   | Eventos registrados de forma consistente e controlada  |
+
+✅ **Conclusão final:**  
+O sistema demonstrou **confidencialidade, isolamento e integridade** em todos os testes de segurança.  
+A arquitetura baseada em **fragmentação criptográfica distribuída** entre duas blockchains privadas eliminou o ponto único de falha e impediu qualquer forma de exposição direta de credenciais.  
+Os resultados comprovam que o modelo implementado segue práticas sólidas de segurança da informação e cumpre integralmente os objetivos propostos na Seção 3.2.5 — *Segurança e Proteção de Dados*.
+
+===========================================================

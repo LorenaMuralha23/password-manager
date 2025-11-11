@@ -1,0 +1,77 @@
+===========================================================
+📘 RESUMO CONSOLIDADO — TESTES DE RESILIÊNCIA
+===========================================================
+
+🧩 Objetivo geral:
+Avaliar a capacidade do sistema de suportar falhas controladas e eventos de interrupção (tanto externas quanto internas), preservando a integridade das credenciais armazenadas e retomando o funcionamento normal sem perda de dados nem necessidade de intervenção manual crítica.
+
+Os testes de resiliência complementam a validação funcional e de segurança, demonstrando o comportamento do sistema sob condições adversas — falhas de rede, interrupção do backend e reconexão em tempo real.
+
+-----------------------------------------------------------
+CT01 — Falha temporária de peer da Org2
+-----------------------------------------------------------
+🧪 Objetivo:
+Simular a indisponibilidade de um dos peers (Org2) durante o armazenamento de uma credencial.
+
+🧭 Resultado:
+- Primeira tentativa falhou de forma controlada (`ServiceDiscoveryException`).
+- Nenhum dado corrompido no H2.
+- Segunda tentativa (após reativação do peer) bem-sucedida.
+- Logs registraram reconexão e conclusão normal da operação.
+
+📎 Status: ✅ Sucesso  
+💡 Evidência: `/tests/resilience/test-resilience-01-falha-peer.log`  
+Tempo médio de recuperação: ~6,5 s  
+
+-----------------------------------------------------------
+CT02 — Interrupção do backend durante gravação
+-----------------------------------------------------------
+🧪 Objetivo:
+Verificar a integridade dos dados após interrupção abrupta do backend durante a gravação nas blockchains.
+
+🧭 Resultado:
+- Backend encerrado manualmente entre o início do `T_store` e a gravação do 1º fragmento.
+- Reinício da aplicação sem inconsistências.
+- Nenhum registro parcial no H2.
+- Novo cadastro da mesma credencial concluído com sucesso após reinicialização.
+
+📎 Status: ✅ Sucesso  
+💡 Evidências:
+  - `/tests/resilience/test-resilience-02a-interrupcao.log`
+  - `/tests/resilience/test-resilience-02b-recuperacao.log`  
+Tempo médio total do novo cadastro: ~5,9 s  
+
+-----------------------------------------------------------
+CT03 — Reconexão e recuperação automática
+-----------------------------------------------------------
+🧪 Objetivo:
+Testar a capacidade de reconexão automática e continuidade operacional quando um peer fica temporariamente indisponível durante a execução.
+
+🧭 Resultado:
+- Falha temporária (peer Org2 desligado) registrada como erro controlado.
+- Backend permaneceu ativo e responsivo.
+- Após religar o peer, a reconexão foi estabelecida automaticamente.
+- Nova tentativa de armazenamento concluída com sucesso.
+- Recuperação da credencial confirmada.
+
+📎 Status: ✅ Sucesso  
+💡 Evidência: `/tests/resilience/test-resilience-03-reconexao.log`  
+Tempo médio de reconexão: ~5,9 s  
+
+-----------------------------------------------------------
+📊 Conclusão geral:
+Os três cenários testados (CT01, CT02 e CT03) comprovaram a **resiliência operacional e a robustez do sistema**:
+
+| Dimensão                 | Resultado observado                                   |
+|---------------------------|------------------------------------------------------|
+| Tolerância a falhas de rede | Reconexão automática e segura                      |
+| Tolerância a falhas internas | Integridade preservada após interrupção abrupta   |
+| Recuperação pós-falha     | Retomada sem reinicialização manual                 |
+| Banco local (H2)          | Nenhum registro parcial ou corrompido               |
+| Logs e auditoria          | Erros tratados e documentados de forma consistente  |
+
+✅ **Conclusão final:**  
+O sistema demonstrou comportamento resiliente em todos os cenários, mantendo a integridade das credenciais, a continuidade da operação e a coerência entre o banco local e as blockchains distribuídas.  
+A arquitetura de **armazenamento fragmentado e redundante em duas blockchains privadas**, combinada ao tratamento de exceções e reconexão dinâmica, validou o modelo proposto de eliminação de ponto único de falha.
+
+===========================================================

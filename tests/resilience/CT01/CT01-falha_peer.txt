@@ -1,0 +1,60 @@
+===========================================================
+CASO DE TESTE DE RESILIÊNCIA — CT01
+===========================================================
+
+🧩 Identificação:
+CT01 — Falha temporária do peer da Org2 durante armazenamento de credencial
+
+🧪 Objetivo:
+Verificar a capacidade do sistema de detectar, registrar e tratar de forma controlada a indisponibilidade temporária de um dos peers da rede blockchain (Org2), garantindo que:
+- o erro não cause corrupção de dados no banco local (H2);
+- a operação seja interrompida com segurança;
+- e, após a restauração do peer, o sistema volte a operar normalmente.
+
+⚙️ Procedimento:
+1. Iniciada a aplicação `PasswordManagerApplication` via `exec-maven-plugin` (Maven/NetBeans).
+2. Efetuado login com o usuário ID=1 (`Senha-12345`).
+3. Adicionada credencial “LinkedIn” → operação concluída com sucesso (ambas as blockchains disponíveis).
+4. Peer da **Org2** desligado via Docker (`docker stop peer0.org2.example.com`).
+5. Tentativa de adicionar credencial “Twitter” sob falha → erro de armazenamento esperado.
+6. Reativado o peer (`docker start peer0.org2.example.com`).
+7. Repetida a operação “Adicionar Senha: Twitter” → armazenamento concluído com sucesso.
+8. Logout e encerramento da CLI.
+
+📄 Evidências:
+- Log: `/tests/resilience/test-resilience-01-falha-peer.log`
+- Prints: captura do CLI durante erro e sucesso
+- Saídas observadas no log:
+  - 🔐 Criptografia concluída
+  - ✂️ Fragmentação concluída
+  - 🧱 Fragmento 1 gravado na Org1
+  - ⚠️ `ServiceDiscoveryException: Failed to find any endorsers for chaincode passwordmanager`
+  - ❌ `Erro ao armazenar fragmentos nas blockchains`
+  - ✅ Após reativação: “Fragmentos gravados com sucesso em ambas as blockchains.”
+  - INFO `[BlockchainService] - Fragmentos gravados com sucesso em ambas as blockchains`
+  - CLI encerrada com segurança.
+
+📊 Métricas observadas:
+| Evento                        | Tempo (s) | Observação / Comportamento |
+|-------------------------------|-----------|-----------------------------|
+| Login e derivação de chave    | 0.24      | Sessão autenticada com sucesso |
+| Armazenamento LinkedIn        | 14.63     | Operação completa em ambas blockchains |
+| Tentativa Twitter (com falha) | 0.43      | Falha controlada — peer indisponível |
+| Armazenamento Twitter (2ª vez)| 6.51      | Sucesso após restauração do peer |
+| Logout                        | 0.00      | Encerramento limpo e seguro |
+
+✅ Resultado esperado:
+O sistema deve registrar erro controlado quando a Org2 estiver indisponível, impedir a gravação parcial dos fragmentos e retomar a operação normalmente após a restauração do peer.
+
+🧾 Resultado obtido:
+Durante a primeira tentativa de gravação da credencial “Twitter”, o sistema registrou falha de descoberta de endorsers (`ServiceDiscoveryException`) e interrompeu o processo sem corromper dados.  
+Após a reativação do peer, a segunda tentativa foi concluída com sucesso, demonstrando recuperação completa do fluxo de armazenamento.
+
+📘 Conclusão:
+O comportamento observado confirma a **resiliência operacional** do sistema diante de falhas temporárias em um dos peers da rede blockchain.  
+A exceção foi tratada corretamente, o log indicou o erro de forma clara e a recuperação foi bem-sucedida após a restauração da Org2, sem comprometer o banco H2 ou o estado interno da aplicação.
+
+📎 Status final:
+✅ Sucesso
+
+===========================================================

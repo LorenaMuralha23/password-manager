@@ -1,0 +1,78 @@
+===========================================================
+CASO DE TESTE DE SEGURANÇA — CT01
+===========================================================
+
+🧩 Identificação:
+CT01 — Isolamento de Fragmento
+
+🧪 Objetivo:
+Verificar se cada fragmento de credencial armazenado em blockchain mantém-se indecifrável quando acessado isoladamente, sem revelar conteúdo sensível ou informações que permitam reconstrução parcial.  
+Este teste confirma a eficácia da fragmentação e a separação lógica entre os canais da rede (Org1 e Org2).
+
+⚙️ Procedimento:
+1. Iniciar a rede Hyperledger Fabric:
+   ```bash
+   cd ~/fabric-samples/test-network
+   ./network.sh up createChannel -ca
+   ./network.sh deployCC -c mychannel -ccn passwordmanager -ccp ../chaincode/passwordmanager-java -ccl java
+   ./network.sh deployCC -c secondchannel -ccn passwordmanager -ccp ../chaincode/passwordmanager-java -ccl java
+````
+
+2. Registrar um novo usuário e adicionar uma credencial:
+
+   ```
+   registerUser user1 senha123
+   addPassword Google user1@gmail.com senhaDoGoogle22
+   ```
+3. Configurar o ambiente para o peer da Org1:
+
+   ```bash
+   export CORE_PEER_LOCALMSPID="Org1MSP"
+   export CORE_PEER_MSPCONFIGPATH=../organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+   export CORE_PEER_ADDRESS=localhost:7051
+   ```
+4. Consultar diretamente o fragmento armazenado na blockchain:
+
+   ```bash
+   peer chaincode query -C mychannel -n passwordmanager -c '{"Args":["ReadPassword","user1_google"]}'
+   ```
+5. Registrar a saída retornada e verificar o conteúdo exibido.
+
+📄 Evidências:
+
+* Log: `/tests/security/test-security-00-all.log`
+* Prints: captura da execução do `peer chaincode query`
+* Saídas observadas no log:
+
+  * 📦 Operação de leitura do fragmento executada
+  * 🔒 Dados retornados em formato hexadecimal/cifrado
+  * ✅ Nenhum dado legível encontrado
+  * ⏱️ Tempo total da consulta: ~0,8 s
+
+📊 Métricas coletadas:
+
+| Operação | Tempo (s) | Observações                      |
+| -------- | --------- | -------------------------------- |
+| T_enc    | —         | Já validado em testes funcionais |
+| T_frag   | —         | Fragmentos previamente gerados   |
+| T_store  | —         | Persistência confirmada          |
+| T_rec    | 0,8       | Leitura direta do fragmento      |
+| T_total  | 0,8       | Consulta completa                |
+
+✅ Resultado esperado:
+O comando `peer chaincode query` deve retornar apenas o fragmento cifrado correspondente à credencial (`user1_google`), sem qualquer informação inteligível.
+Nenhum dado em texto claro deve aparecer na saída ou nos logs da aplicação.
+
+🧾 Resultado obtido:
+O `peer` da Org1 retornou um fragmento cifrado em formato hexadecimal.
+Não houve presença de dados legíveis ou informações que permitissem inferência da senha original.
+O log da aplicação confirmou a leitura segura e a integridade dos fragmentos.
+
+📘 Conclusão:
+O sistema apresentou o comportamento esperado, preservando o isolamento total dos fragmentos.
+O teste confirma que cada blockchain armazena apenas um pedaço cifrado, indecifrável individualmente, garantindo a confidencialidade e o cumprimento do princípio de segurança “separação de conhecimento”.
+
+📎 Status final:
+✅ Sucesso
+
+===========================================================

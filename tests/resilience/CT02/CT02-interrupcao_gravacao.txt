@@ -1,0 +1,66 @@
+===========================================================
+CASO DE TESTE DE RESILIÊNCIA — CT02
+===========================================================
+
+🧩 Identificação:
+CT02 — Interrupção do backend durante o armazenamento de credencial
+
+🧪 Objetivo:
+Verificar a capacidade do sistema de manter a integridade dos dados e o comportamento consistente quando ocorre uma interrupção inesperada do backend (finalização forçada ou queda) durante o processo de gravação de fragmentos nas blockchains.  
+Avaliar se o banco H2 permanece íntegro, se não há registros parciais ou corrompidos, e se o sistema retoma o funcionamento normal após o reinício.
+
+⚙️ Procedimento:
+1. Iniciada a aplicação (`PasswordManagerApplication`) via Maven (`exec-maven-plugin`).
+2. Efetuado login com o usuário ID=1 e senha mestre `Senha-12345`.
+3. Iniciada operação de cadastro de credencial “Instagram”.
+4. Observado o início de `T_store | Store fragments in blockchains`.
+5. **Interrompida manualmente a execução** (Ctrl+C) antes da conclusão da operação, simulando queda inesperada do backend.
+6. Reiniciada a aplicação.
+7. Efetuado login novamente (usuário ID=1).
+8. Listadas credenciais armazenadas → três registros válidos (IDs 1, 33, 34).
+9. Testada recuperação de senha ID 34 → operação bem-sucedida (dados íntegros).
+10. Cadastrada novamente a credencial “Instagram” → operação concluída com sucesso (ID 65).
+11. Verificada listagem final → quatro credenciais (1, 33, 34, 65), todas válidas.
+
+📄 Evidências:
+- Log (fase A – interrupção): `/tests/resilience/test-resilience-02a-interrupcao.log`
+- Log (fase B – recuperação): `/tests/resilience/test-resilience-02b-recuperacao.log`
+- Prints: capturas de tela do CLI antes da interrupção e após o reinício
+- Saídas observadas no log:
+  - `[INICIO] T_store | Store fragments in blockchains`
+  - Interrupção sem stacktrace ou erro crítico
+  - Reinício do backend e autenticação normal
+  - `Consulta concluída. Total de registros encontrados: 3`
+  - `Credencial 'Instagram' registrada com sucesso | ID: 65`
+  - `Listagem concluída. Total de credenciais: 4`
+
+📊 Métricas observadas:
+| Evento                                  | Tempo (s) | Observação / Comportamento |
+|------------------------------------------|-----------|-----------------------------|
+| Login inicial                            | 0.27      | Autenticação bem-sucedida |
+| Criptografia e fragmentação (pré-falha)  | ~0.05     | Execução normal até o início do armazenamento |
+| Momento da interrupção                   | —         | Aplicação encerrada entre `T_store` e gravação do 1º fragmento |
+| Reinicialização e login                  | 0.19      | Sistema reiniciado sem erros |
+| Recuperação e listagem de credenciais    | 0.27      | Nenhum registro parcial encontrado |
+| Novo cadastro de “Instagram”             | 5.95      | Operação concluída com sucesso |
+| Listagem final de credenciais            | 0.01      | 4 registros íntegros no H2 |
+
+✅ Resultado esperado:
+O sistema deve lidar com a interrupção sem gerar inconsistências no banco local ou nos registros de fragmentação.  
+Após o reinício, deve ser possível listar e recuperar credenciais antigas, e inserir novas credenciais normalmente.
+
+🧾 Resultado obtido:
+Durante o primeiro fluxo, o backend foi interrompido durante o processo `T_store`, simulando falha abrupta.  
+Após o reinício, o sistema voltou a funcionar normalmente — o banco H2 não apresentou dados corrompidos, e as credenciais anteriores permaneceram acessíveis.  
+O novo cadastro (“Instagram”) foi concluído com sucesso, validando a retomada completa do fluxo.
+
+📘 Conclusão:
+O sistema demonstrou **resiliência a falhas internas de execução**.  
+A interrupção inesperada durante a gravação não causou perda de dados, corrupção ou travamento no banco local.  
+A retomada ocorreu de forma limpa, preservando a integridade das credenciais existentes e permitindo novas operações após o reinício.  
+Comportamento conforme o modelo de resiliência proposto.
+
+📎 Status final:
+✅ Sucesso
+
+===========================================================

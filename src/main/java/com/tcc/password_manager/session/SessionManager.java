@@ -117,7 +117,7 @@ public class SessionManager {
             if (last != null && Duration.between(last, Instant.now()).compareTo(IDLE_TIMEOUT) > 0) {
                 log.warn("Sessao expirada por inatividade. Tempo maximo permitido: {} minutos.", IDLE_TIMEOUT.toMinutes());
                 session.clear();
-                throw new IllegalStateException("Sessao expirada por inatividade. Faça login novamente.");
+                throw new IllegalStateException("Sessao expirada por inatividade. Faca login novamente.");
             }
 
             session.touch();

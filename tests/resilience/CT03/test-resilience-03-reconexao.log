@@ -1,0 +1,275 @@
+16:56:34.946 INFO   [c.t.p.connector.FabricConnector] - Wallet inicializada no caminho: D:\IFSC\8th Phase\TCB\Desenvolvimento\Desenvolvimento\password-manager\wallet
+16:56:34.956 INFO   [c.t.p.connector.FabricConnector] - Configuracoes das organizacoes pre-carregadas: [org1, org2]
+16:56:34.968 INFO   [c.t.p.connector.FabricConnector] - Wallet inicializada no caminho: D:\IFSC\8th Phase\TCB\Desenvolvimento\Desenvolvimento\password-manager\wallet
+16:56:34.968 INFO   [c.t.p.connector.FabricConnector] - Configuracoes das organizacoes pre-carregadas: [org1, org2]
+16:56:34.971 INFO   [c.t.p.config.FabricConfig] - Wallet localizado em: D:\IFSC\8th Phase\TCB\Desenvolvimento\Desenvolvimento\password-manager\src\main\resources\wallet
+16:56:34.978 INFO   [c.t.p.config.FabricConfig] - Caminho de configuracao da rede Fabric definido: D:\IFSC\8th Phase\TCB\Desenvolvimento\Desenvolvimento\password-manager\src\main\resources\connection-org1.yml
+16:56:37.084 INFO   [c.t.p.config.WalletInitializer] - Verificando wallet em: D:\IFSC\8th Phase\TCB\Desenvolvimento\Desenvolvimento\password-manager\src\main\resources\wallet
+16:56:37.835 INFO   [c.t.p.config.WalletInitializer] - Identidade 'appUser' ja esta registrada no wallet.
+16:56:37.844 INFO   [c.tcc.password_manager.cli.CliRunner] - Inicializando CLI do Password Manager...
+16:57:46.527 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Login de Usuario ===
+16:57:46.529 INFO   [c.t.p.session.SessionManager] - === [INICIO] User session login ===
+16:57:46.530 INFO   [c.t.p.session.SessionManager] - Iniciando autenticacao para o usuario ID: 1
+16:57:46.627 INFO   [c.t.p.crypto.PasswordKeyDerivation] - === [INICIO] Derive key from master password (simplified) ===
+16:57:46.627 INFO   [c.t.p.crypto.PasswordKeyDerivation] - Iniciando derivacao de chave a partir da senha mestre.
+16:57:46.628 INFO   [c.t.p.crypto.PasswordKeyDerivation] - [FIM] Derive key from master password (simplified) | Tempo total: 1 ms
+16:57:46.700 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] Decrypt operation (AES-256-GCM) ===
+16:57:46.726 INFO   [c.t.p.crypto.CryptoService] - Decifragem concluida com sucesso. Tamanho do plaintext: 32 bytes
+16:57:46.726 INFO   [c.t.p.crypto.CryptoService] - [FIM] Decrypt operation (AES-256-GCM) | Tempo total: 25 ms
+16:57:46.727 INFO   [c.t.p.crypto.HashService] - === [INICIO] Generate SHA-256 hash (bytes) ===
+16:57:46.727 INFO   [c.t.p.crypto.HashService] - Hash SHA-256 gerado com sucesso. Tamanho do digest: 32 bytes, formato Base64: 44 caracteres.
+16:57:46.727 INFO   [c.t.p.crypto.HashService] - [FIM] Generate SHA-256 hash (bytes) | Tempo total: 0 ms
+16:57:46.728 INFO   [c.t.p.session.SessionManager] - Sessao autenticada com sucesso para o usuario ID: 1
+16:57:46.728 INFO   [c.t.p.session.SessionManager] - [FIM] User session login | Tempo total: 198 ms
+16:57:46.728 INFO   [c.t.p.c.PasswordManagerController] - Login realizado com sucesso | User ID: 1
+16:57:46.728 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Login de Usuario | Tempo total: 199 ms
+16:57:46.728 INFO   [c.tcc.password_manager.cli.CliRunner] - Login bem-sucedido para o usuario ID 1
+16:58:04.637 INFO   [c.t.p.service.AppUserService] - === [INICIO] Find user by ID ===
+16:58:04.640 INFO   [c.t.p.service.AppUserService] - Usuario encontrado para o ID: 1
+16:58:04.640 INFO   [c.t.p.service.AppUserService] - [FIM] Find user by ID | Tempo total: 2 ms
+16:58:04.642 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Cadastro de Credencial (Spotify) ===
+16:58:04.642 INFO   [c.t.p.crypto.JsonEncryptionService] - === [INICIO] Encrypt DTO to encrypted_data (String) ===
+16:58:04.642 INFO   [c.t.p.crypto.JsonEncryptionService] - Iniciando cifragem do DTO para armazenamento seguro. Tipo: String
+16:58:04.654 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] T_enc | Encrypt operation (AES-256-GCM) ===
+16:58:04.655 INFO   [c.t.p.crypto.IVGeneratorService] - === [INICIO] Generate GCM IV (byte array) ===
+16:58:04.655 INFO   [c.t.p.crypto.IVGeneratorService] - IV gerado com sucesso. Tamanho: 12 bytes.
+16:58:04.655 INFO   [c.t.p.crypto.IVGeneratorService] - [FIM] Generate GCM IV (byte array) | Tempo total: 0 ms
+16:58:04.657 INFO   [c.t.p.crypto.CryptoService] - Cifragem concluida com sucesso. Tamanho do ciphertext: 14 bytes
+16:58:04.657 INFO   [c.t.p.crypto.CryptoService] - [FIM] T_enc | Encrypt operation (AES-256-GCM) | Tempo total: 3 ms
+16:58:04.677 INFO   [c.t.p.crypto.JsonEncryptionService] - Cifragem do DTO concluida. Tamanho do encrypted_data: 122 caracteres.
+16:58:04.678 INFO   [c.t.p.crypto.JsonEncryptionService] - [FIM] Encrypt DTO to encrypted_data (String) | Tempo total: 36 ms
+16:58:04.678 INFO   [c.t.p.c.PasswordManagerController] - Criptografia concluida | Tamanho: 122 bytes
+16:58:04.678 INFO   [c.t.p.service.FragmentationService] - === [INICIO] T_frag | Fragmentation operation ===
+16:58:04.682 INFO   [c.t.p.service.FragmentationService] - Fragmentacao concluida. Fragmento 1: 19 chars, Fragmento 2: 103 chars
+16:58:04.682 INFO   [c.t.p.service.FragmentationService] - [FIM] T_frag | Fragmentation operation | Tempo total: 4 ms
+16:58:04.683 INFO   [c.t.p.c.PasswordManagerController] - Fragmentacao concluida | Fragmentos: 2
+16:58:04.683 INFO   [c.t.p.service.BlockchainService] - === [INICIO] T_store | Store fragments in blockchains ===
+16:58:04.683 INFO   [c.t.p.service.BlockchainService] - Iniciando gravacao dos fragmentos nas blockchains para o ID: afa27d96-e9ba-4bfb-aaeb-d54cc2bb0132
+16:58:04.684 INFO   [c.t.p.connector.FabricConnector] - === [INICIO] Connect to Fabric network (org1) ===
+16:58:04.684 INFO   [c.t.p.connector.FabricConnector] - Solicitacao de contrato para a organizacao 'org1' e chaincode 'passwordmanager'.
+16:58:08.795 INFO   [c.t.p.connector.FabricConnector] - Conexao estabelecida com sucesso. Contrato obtido para 'org1'.
+16:58:08.796 INFO   [c.t.p.connector.FabricConnector] - [FIM] Connect to Fabric network (org1) | Tempo total: 4,112 s
+16:58:11.446 INFO   [c.t.p.service.BlockchainService] - Fragmento 1 gravado com sucesso na Org1.
+16:58:11.446 INFO   [c.t.p.connector.FabricConnector] - === [INICIO] Connect to Fabric network (org2) ===
+16:58:11.446 INFO   [c.t.p.connector.FabricConnector] - Solicitacao de contrato para a organizacao 'org2' e chaincode 'passwordmanager'.
+16:58:12.006 INFO   [c.t.p.connector.FabricConnector] - Conexao estabelecida com sucesso. Contrato obtido para 'org2'.
+16:58:12.007 INFO   [c.t.p.connector.FabricConnector] - [FIM] Connect to Fabric network (org2) | Tempo total: 561 ms
+16:58:14.411 INFO   [c.t.p.service.BlockchainService] - Fragmento 2 gravado com sucesso na Org2.
+16:58:14.412 INFO   [c.t.p.service.BlockchainService] - Fragmentos gravados com sucesso em ambas as blockchains.
+16:58:14.412 INFO   [c.t.p.service.BlockchainService] - [FIM] T_store | Store fragments in blockchains | Tempo total: 9,729 s
+16:58:14.412 INFO   [c.t.p.c.PasswordManagerController] - Fragmentos armazenados nas blockchains | ID logico: afa27d96-e9ba-4bfb-aaeb-d54cc2bb0132
+16:58:14.419 INFO   [c.t.p.s.PasswordReferenceService] - === [INICIO] Encrypt and persist password reference ===
+16:58:14.419 INFO   [c.t.p.s.PasswordReferenceService] - Iniciando processo de cifragem e persistencia de credencial para o usuario ID: 1
+16:58:14.419 INFO   [c.t.p.crypto.JsonEncryptionService] - === [INICIO] Encrypt DTO to encrypted_data (PasswordReferenceClearData) ===
+16:58:14.419 INFO   [c.t.p.crypto.JsonEncryptionService] - Iniciando cifragem do DTO para armazenamento seguro. Tipo: PasswordReferenceClearData
+16:58:14.421 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] T_enc | Encrypt operation (AES-256-GCM) ===
+16:58:14.422 INFO   [c.t.p.crypto.IVGeneratorService] - === [INICIO] Generate GCM IV (byte array) ===
+16:58:14.422 INFO   [c.t.p.crypto.IVGeneratorService] - IV gerado com sucesso. Tamanho: 12 bytes.
+16:58:14.422 INFO   [c.t.p.crypto.IVGeneratorService] - [FIM] Generate GCM IV (byte array) | Tempo total: 0 ms
+16:58:14.424 INFO   [c.t.p.crypto.CryptoService] - Cifragem concluida com sucesso. Tamanho do ciphertext: 425 bytes
+16:58:14.424 INFO   [c.t.p.crypto.CryptoService] - [FIM] T_enc | Encrypt operation (AES-256-GCM) | Tempo total: 2 ms
+16:58:14.425 INFO   [c.t.p.crypto.JsonEncryptionService] - Cifragem do DTO concluida. Tamanho do encrypted_data: 670 caracteres.
+16:58:14.426 INFO   [c.t.p.crypto.JsonEncryptionService] - [FIM] Encrypt DTO to encrypted_data (PasswordReferenceClearData) | Tempo total: 7 ms
+16:58:14.479 INFO   [c.t.p.s.PasswordReferenceService] - Credencial persistida com sucesso. ID gerado: 97
+16:58:14.498 INFO   [c.t.p.s.PasswordReferenceService] - [FIM] Encrypt and persist password reference | Tempo total: 79 ms
+16:58:14.499 INFO   [c.t.p.c.PasswordManagerController] - Credencial 'Spotify' registrada com sucesso | ID: 97
+16:58:14.500 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Cadastro de Credencial (Spotify) | Tempo total: 9,857 s
+16:58:14.501 INFO   [c.tcc.password_manager.cli.CliRunner] - Nova credencial 'Spotify' registrada (ID 97).
+16:58:58.045 INFO   [c.t.p.service.AppUserService] - === [INICIO] Find user by ID ===
+16:58:58.049 INFO   [c.t.p.service.AppUserService] - Usuario encontrado para o ID: 1
+16:58:58.049 INFO   [c.t.p.service.AppUserService] - [FIM] Find user by ID | Tempo total: 3 ms
+16:58:58.050 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Cadastro de Credencial (Strava) ===
+16:58:58.050 INFO   [c.t.p.crypto.JsonEncryptionService] - === [INICIO] Encrypt DTO to encrypted_data (String) ===
+16:58:58.050 INFO   [c.t.p.crypto.JsonEncryptionService] - Iniciando cifragem do DTO para armazenamento seguro. Tipo: String
+16:58:58.051 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] T_enc | Encrypt operation (AES-256-GCM) ===
+16:58:58.051 INFO   [c.t.p.crypto.IVGeneratorService] - === [INICIO] Generate GCM IV (byte array) ===
+16:58:58.051 INFO   [c.t.p.crypto.IVGeneratorService] - IV gerado com sucesso. Tamanho: 12 bytes.
+16:58:58.052 INFO   [c.t.p.crypto.IVGeneratorService] - [FIM] Generate GCM IV (byte array) | Tempo total: 0 ms
+16:58:58.052 INFO   [c.t.p.crypto.CryptoService] - Cifragem concluida com sucesso. Tamanho do ciphertext: 14 bytes
+16:58:58.052 INFO   [c.t.p.crypto.CryptoService] - [FIM] T_enc | Encrypt operation (AES-256-GCM) | Tempo total: 1 ms
+16:58:58.052 INFO   [c.t.p.crypto.JsonEncryptionService] - Cifragem do DTO concluida. Tamanho do encrypted_data: 122 caracteres.
+16:58:58.053 INFO   [c.t.p.crypto.JsonEncryptionService] - [FIM] Encrypt DTO to encrypted_data (String) | Tempo total: 3 ms
+16:58:58.053 INFO   [c.t.p.c.PasswordManagerController] - Criptografia concluida | Tamanho: 122 bytes
+16:58:58.053 INFO   [c.t.p.service.FragmentationService] - === [INICIO] T_frag | Fragmentation operation ===
+16:58:58.053 INFO   [c.t.p.service.FragmentationService] - Fragmentacao concluida. Fragmento 1: 17 chars, Fragmento 2: 105 chars
+16:58:58.055 INFO   [c.t.p.service.FragmentationService] - [FIM] T_frag | Fragmentation operation | Tempo total: 2 ms
+16:58:58.055 INFO   [c.t.p.c.PasswordManagerController] - Fragmentacao concluida | Fragmentos: 2
+16:58:58.055 INFO   [c.t.p.service.BlockchainService] - === [INICIO] T_store | Store fragments in blockchains ===
+16:58:58.055 INFO   [c.t.p.service.BlockchainService] - Iniciando gravacao dos fragmentos nas blockchains para o ID: 87378c4e-72b5-4fc5-9bd0-e78fabfb5eef
+16:58:58.055 INFO   [c.t.p.connector.FabricConnector] - === [INICIO] Connect to Fabric network (org1) ===
+16:58:58.055 INFO   [c.t.p.connector.FabricConnector] - Solicitacao de contrato para a organizacao 'org1' e chaincode 'passwordmanager'.
+16:58:58.190 ERROR  [o.h.fabric.sdk.ServiceDiscovery] - Error failed constructing descriptor for chaincodes:{name:"_lifecycle"}
+16:58:58.190 ERROR  [o.h.fabric.sdk.ServiceDiscovery] - Error failed constructing descriptor for chaincodes:{name:"passwordmanager"}
+16:58:58.521 INFO   [c.t.p.connector.FabricConnector] - Conexao estabelecida com sucesso. Contrato obtido para 'org1'.
+16:58:58.522 INFO   [c.t.p.connector.FabricConnector] - [FIM] Connect to Fabric network (org1) | Tempo total: 467 ms
+16:58:58.539 ERROR  [o.h.fabric.sdk.ServiceDiscovery] - Error failed constructing descriptor for chaincodes:{name:"passwordmanager"}
+16:58:58.545 ERROR  [o.h.fabric.sdk.ServiceDiscovery] - Error failed constructing descriptor for chaincodes:{name:"passwordmanager"}
+16:58:58.546 ERROR  [c.t.p.service.BlockchainService] - Falha ao gravar fragmentos nas blockchains: org.hyperledger.fabric.sdk.exception.ServiceDiscoveryException: Failed to find any endorsers for chaincode passwordmanager. See logs for details
+16:58:58.547 INFO   [c.t.p.service.BlockchainService] - [FIM] T_store | Store fragments in blockchains | Tempo total: 492 ms
+16:58:58.547 ERROR  [c.t.p.c.PasswordManagerController] - Erro ao adicionar senha 'Strava': Erro ao armazenar fragmentos nas blockchains
+16:58:58.547 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Cadastro de Credencial (Strava) | Tempo total: 497 ms
+16:58:58.547 ERROR  [c.tcc.password_manager.cli.CliRunner] - Erro ao executar operacao '4': Erro ao adicionar senha: Erro ao armazenar fragmentos nas blockchains
+java.lang.RuntimeException: Erro ao adicionar senha: Erro ao armazenar fragmentos nas blockchains
+	at com.tcc.password_manager.controller.PasswordManagerController.addPassword(PasswordManagerController.java:170)
+	at com.tcc.password_manager.cli.CliRunner.handleAddPassword(CliRunner.java:126)
+	at com.tcc.password_manager.cli.CliRunner.start(CliRunner.java:54)
+	at com.tcc.password_manager.PasswordManagerApplication.lambda$main$0(PasswordManagerApplication.java:18)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.RuntimeException: Erro ao armazenar fragmentos nas blockchains
+	at com.tcc.password_manager.service.BlockchainService.storeFragments(BlockchainService.java:51)
+	at com.tcc.password_manager.controller.PasswordManagerController.addPassword(PasswordManagerController.java:148)
+	... 4 common frames omitted
+Caused by: org.hyperledger.fabric.gateway.GatewayRuntimeException: org.hyperledger.fabric.sdk.exception.ServiceDiscoveryException: Failed to find any endorsers for chaincode passwordmanager. See logs for details
+	at org.hyperledger.fabric.gateway.impl.TransactionImpl.endorseTransaction(TransactionImpl.java:122)
+	at org.hyperledger.fabric.gateway.impl.TransactionImpl.submit(TransactionImpl.java:106)
+	at org.hyperledger.fabric.gateway.impl.ContractImpl.submitTransaction(ContractImpl.java:50)
+	at com.tcc.password_manager.service.BlockchainService.storeFragments(BlockchainService.java:40)
+	... 5 common frames omitted
+Caused by: org.hyperledger.fabric.sdk.exception.ServiceDiscoveryException: Failed to find any endorsers for chaincode passwordmanager. See logs for details
+	at org.hyperledger.fabric.sdk.ServiceDiscovery.discoverEndorserEndpoint(ServiceDiscovery.java:98)
+	at org.hyperledger.fabric.sdk.Channel.sendTransactionProposalToEndorsers(Channel.java:4445)
+	at org.hyperledger.fabric.gateway.impl.TransactionImpl.sendTransactionProposal(TransactionImpl.java:134)
+	at org.hyperledger.fabric.gateway.impl.TransactionImpl.endorseTransaction(TransactionImpl.java:120)
+	... 8 common frames omitted
+16:59:49.536 INFO   [c.t.p.service.AppUserService] - === [INICIO] Find user by ID ===
+16:59:49.541 INFO   [c.t.p.service.AppUserService] - Usuario encontrado para o ID: 1
+16:59:49.542 INFO   [c.t.p.service.AppUserService] - [FIM] Find user by ID | Tempo total: 6 ms
+16:59:49.542 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Cadastro de Credencial (Strava) ===
+16:59:49.542 INFO   [c.t.p.crypto.JsonEncryptionService] - === [INICIO] Encrypt DTO to encrypted_data (String) ===
+16:59:49.543 INFO   [c.t.p.crypto.JsonEncryptionService] - Iniciando cifragem do DTO para armazenamento seguro. Tipo: String
+16:59:49.543 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] T_enc | Encrypt operation (AES-256-GCM) ===
+16:59:49.544 INFO   [c.t.p.crypto.IVGeneratorService] - === [INICIO] Generate GCM IV (byte array) ===
+16:59:49.544 INFO   [c.t.p.crypto.IVGeneratorService] - IV gerado com sucesso. Tamanho: 12 bytes.
+16:59:49.544 INFO   [c.t.p.crypto.IVGeneratorService] - [FIM] Generate GCM IV (byte array) | Tempo total: 0 ms
+16:59:49.545 INFO   [c.t.p.crypto.CryptoService] - Cifragem concluida com sucesso. Tamanho do ciphertext: 14 bytes
+16:59:49.545 INFO   [c.t.p.crypto.CryptoService] - [FIM] T_enc | Encrypt operation (AES-256-GCM) | Tempo total: 2 ms
+16:59:49.546 INFO   [c.t.p.crypto.JsonEncryptionService] - Cifragem do DTO concluida. Tamanho do encrypted_data: 122 caracteres.
+16:59:49.546 INFO   [c.t.p.crypto.JsonEncryptionService] - [FIM] Encrypt DTO to encrypted_data (String) | Tempo total: 3 ms
+16:59:49.546 INFO   [c.t.p.c.PasswordManagerController] - Criptografia concluida | Tamanho: 122 bytes
+16:59:49.546 INFO   [c.t.p.service.FragmentationService] - === [INICIO] T_frag | Fragmentation operation ===
+16:59:49.548 INFO   [c.t.p.service.FragmentationService] - Fragmentacao concluida. Fragmento 1: 119 chars, Fragmento 2: 3 chars
+16:59:49.549 INFO   [c.t.p.service.FragmentationService] - [FIM] T_frag | Fragmentation operation | Tempo total: 1 ms
+16:59:49.549 INFO   [c.t.p.c.PasswordManagerController] - Fragmentacao concluida | Fragmentos: 2
+16:59:49.549 INFO   [c.t.p.service.BlockchainService] - === [INICIO] T_store | Store fragments in blockchains ===
+16:59:49.549 INFO   [c.t.p.service.BlockchainService] - Iniciando gravacao dos fragmentos nas blockchains para o ID: ed69dac4-e814-491f-8cc9-241d2f3514a0
+16:59:49.550 INFO   [c.t.p.connector.FabricConnector] - === [INICIO] Connect to Fabric network (org1) ===
+16:59:49.550 INFO   [c.t.p.connector.FabricConnector] - Solicitacao de contrato para a organizacao 'org1' e chaincode 'passwordmanager'.
+16:59:50.000 INFO   [c.t.p.connector.FabricConnector] - Conexao estabelecida com sucesso. Contrato obtido para 'org1'.
+16:59:50.000 INFO   [c.t.p.connector.FabricConnector] - [FIM] Connect to Fabric network (org1) | Tempo total: 450 ms
+16:59:52.556 INFO   [c.t.p.service.BlockchainService] - Fragmento 1 gravado com sucesso na Org1.
+16:59:52.557 INFO   [c.t.p.connector.FabricConnector] - === [INICIO] Connect to Fabric network (org2) ===
+16:59:52.558 INFO   [c.t.p.connector.FabricConnector] - Solicitacao de contrato para a organizacao 'org2' e chaincode 'passwordmanager'.
+16:59:53.035 INFO   [c.t.p.connector.FabricConnector] - Conexao estabelecida com sucesso. Contrato obtido para 'org2'.
+16:59:53.035 INFO   [c.t.p.connector.FabricConnector] - [FIM] Connect to Fabric network (org2) | Tempo total: 477 ms
+16:59:55.446 INFO   [c.t.p.service.BlockchainService] - Fragmento 2 gravado com sucesso na Org2.
+16:59:55.447 INFO   [c.t.p.service.BlockchainService] - Fragmentos gravados com sucesso em ambas as blockchains.
+16:59:55.448 INFO   [c.t.p.service.BlockchainService] - [FIM] T_store | Store fragments in blockchains | Tempo total: 5,898 s
+16:59:55.448 INFO   [c.t.p.c.PasswordManagerController] - Fragmentos armazenados nas blockchains | ID logico: ed69dac4-e814-491f-8cc9-241d2f3514a0
+16:59:55.449 INFO   [c.t.p.s.PasswordReferenceService] - === [INICIO] Encrypt and persist password reference ===
+16:59:55.449 INFO   [c.t.p.s.PasswordReferenceService] - Iniciando processo de cifragem e persistencia de credencial para o usuario ID: 1
+16:59:55.450 INFO   [c.t.p.crypto.JsonEncryptionService] - === [INICIO] Encrypt DTO to encrypted_data (PasswordReferenceClearData) ===
+16:59:55.450 INFO   [c.t.p.crypto.JsonEncryptionService] - Iniciando cifragem do DTO para armazenamento seguro. Tipo: PasswordReferenceClearData
+16:59:55.451 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] T_enc | Encrypt operation (AES-256-GCM) ===
+16:59:55.451 INFO   [c.t.p.crypto.IVGeneratorService] - === [INICIO] Generate GCM IV (byte array) ===
+16:59:55.451 INFO   [c.t.p.crypto.IVGeneratorService] - IV gerado com sucesso. Tamanho: 12 bytes.
+16:59:55.451 INFO   [c.t.p.crypto.IVGeneratorService] - [FIM] Generate GCM IV (byte array) | Tempo total: 0 ms
+16:59:55.454 INFO   [c.t.p.crypto.CryptoService] - Cifragem concluida com sucesso. Tamanho do ciphertext: 356 bytes
+16:59:55.454 INFO   [c.t.p.crypto.CryptoService] - [FIM] T_enc | Encrypt operation (AES-256-GCM) | Tempo total: 3 ms
+16:59:55.455 INFO   [c.t.p.crypto.JsonEncryptionService] - Cifragem do DTO concluida. Tamanho do encrypted_data: 578 caracteres.
+16:59:55.455 INFO   [c.t.p.crypto.JsonEncryptionService] - [FIM] Encrypt DTO to encrypted_data (PasswordReferenceClearData) | Tempo total: 5 ms
+16:59:55.461 INFO   [c.t.p.s.PasswordReferenceService] - Credencial persistida com sucesso. ID gerado: 98
+16:59:55.461 INFO   [c.t.p.s.PasswordReferenceService] - [FIM] Encrypt and persist password reference | Tempo total: 12 ms
+16:59:55.461 INFO   [c.t.p.c.PasswordManagerController] - Credencial 'Strava' registrada com sucesso | ID: 98
+16:59:55.461 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Cadastro de Credencial (Strava) | Tempo total: 5,919 s
+16:59:55.461 INFO   [c.tcc.password_manager.cli.CliRunner] - Nova credencial 'Strava' registrada (ID 98).
+17:00:03.656 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Listagem de Credenciais ===
+17:00:03.656 INFO   [c.t.p.s.PasswordReferenceService] - === [INICIO] Find password references by user ID ===
+17:00:03.987 INFO   [c.t.p.s.PasswordReferenceService] - Consulta concluida. Total de registros encontrados para o usuario 1: 6
+17:00:03.987 INFO   [c.t.p.s.PasswordReferenceService] - [FIM] Find password references by user ID | Tempo total: 331 ms
+17:00:03.987 INFO   [c.t.p.c.PasswordManagerController] - Total de credenciais encontradas: 6
+17:00:03.988 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Listagem de Credenciais | Tempo total: 332 ms
+17:00:03.989 INFO   [c.tcc.password_manager.cli.CliRunner] - Listagem concluida. Total de credenciais: 6
+17:00:17.610 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Recuperacao de Metadados | Password ID: 98 ===
+17:00:17.611 INFO   [c.t.p.s.PasswordReferenceService] - === [INICIO] Find password reference by ID ===
+17:00:17.615 INFO   [c.t.p.s.PasswordReferenceService] - Referencia encontrada para o ID: 98
+17:00:17.616 INFO   [c.t.p.s.PasswordReferenceService] - [FIM] Find password reference by ID | Tempo total: 5 ms
+17:00:17.617 INFO   [c.t.p.s.PasswordReferenceService] - === [INICIO] Decrypt password reference from entity ===
+17:00:17.617 INFO   [c.t.p.s.PasswordReferenceService] - === [INICIO] Decrypt password reference from JSON string ===
+17:00:17.617 INFO   [c.t.p.crypto.JsonEncryptionService] - === [INICIO] Decrypt encrypted_data to DTO (PasswordReferenceClearData) ===
+17:00:17.619 INFO   [c.t.p.crypto.JsonEncryptionService] - Iniciando decifragem do campo encrypted_data para o DTO: PasswordReferenceClearData
+17:00:17.620 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] Decrypt operation (AES-256-GCM) ===
+17:00:17.622 INFO   [c.t.p.crypto.CryptoService] - Decifragem concluida com sucesso. Tamanho do plaintext: 356 bytes
+17:00:17.622 INFO   [c.t.p.crypto.CryptoService] - [FIM] Decrypt operation (AES-256-GCM) | Tempo total: 1 ms
+17:00:17.623 INFO   [c.t.p.crypto.JsonEncryptionService] - Decifragem concluida. DTO PasswordReferenceClearData reconstruido com sucesso.
+17:00:17.623 INFO   [c.t.p.crypto.JsonEncryptionService] - [FIM] Decrypt encrypted_data to DTO (PasswordReferenceClearData) | Tempo total: 4 ms
+17:00:17.625 INFO   [c.t.p.s.PasswordReferenceService] - Metadados decifrados com sucesso.
+17:00:17.625 INFO   [c.t.p.s.PasswordReferenceService] - [FIM] Decrypt password reference from JSON string | Tempo total: 8 ms
+17:00:17.625 INFO   [c.t.p.s.PasswordReferenceService] - Entidade ID 98 decifrada com sucesso.
+17:00:17.625 INFO   [c.t.p.s.PasswordReferenceService] - [FIM] Decrypt password reference from entity | Tempo total: 8 ms
+17:00:17.625 INFO   [c.t.p.c.PasswordManagerController] - Metadados decifrados | Nickname: Strava
+17:00:17.625 INFO   [c.t.p.service.BlockchainService] - === [INICIO] T_rec | Retrieve fragments from blockchains ===
+17:00:17.625 INFO   [c.t.p.service.BlockchainService] - Iniciando recuperacao dos fragmentos das blockchains para o ID: ed69dac4-e814-491f-8cc9-241d2f3514a0
+17:00:17.625 INFO   [c.t.p.connector.FabricConnector] - === [INICIO] Connect to Fabric network (org1) ===
+17:00:17.626 INFO   [c.t.p.connector.FabricConnector] - Solicitacao de contrato para a organizacao 'org1' e chaincode 'passwordmanager'.
+17:00:18.089 INFO   [c.t.p.connector.FabricConnector] - Conexao estabelecida com sucesso. Contrato obtido para 'org1'.
+17:00:18.090 INFO   [c.t.p.connector.FabricConnector] - [FIM] Connect to Fabric network (org1) | Tempo total: 464 ms
+17:00:18.090 INFO   [c.t.p.connector.FabricConnector] - === [INICIO] Connect to Fabric network (org2) ===
+17:00:18.090 INFO   [c.t.p.connector.FabricConnector] - Solicitacao de contrato para a organizacao 'org2' e chaincode 'passwordmanager'.
+17:00:18.697 INFO   [c.t.p.connector.FabricConnector] - Conexao estabelecida com sucesso. Contrato obtido para 'org2'.
+17:00:18.698 INFO   [c.t.p.connector.FabricConnector] - [FIM] Connect to Fabric network (org2) | Tempo total: 608 ms
+17:00:18.762 INFO   [c.t.p.service.BlockchainService] - Fragmentos recuperados com sucesso para o ID: ed69dac4-e814-491f-8cc9-241d2f3514a0
+17:00:18.763 INFO   [c.t.p.service.BlockchainService] - [FIM] T_rec | Retrieve fragments from blockchains | Tempo total: 1,137 s
+17:00:18.763 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Recuperacao de Metadados | Password ID: 98 | Tempo total: 1,153 s
+17:00:18.763 INFO   [c.tcc.password_manager.cli.CliRunner] - Metadados recuperados para credencial ID 98
+17:00:23.290 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Recuperacao Completa da Senha | ID: 98 ===
+17:00:23.290 INFO   [c.t.p.s.PasswordReferenceService] - === [INICIO] Find password reference by ID ===
+17:00:23.293 INFO   [c.t.p.s.PasswordReferenceService] - Referencia encontrada para o ID: 98
+17:00:23.293 INFO   [c.t.p.s.PasswordReferenceService] - [FIM] Find password reference by ID | Tempo total: 3 ms
+17:00:23.294 INFO   [c.t.p.s.PasswordReferenceService] - === [INICIO] Decrypt password reference from entity ===
+17:00:23.294 INFO   [c.t.p.s.PasswordReferenceService] - === [INICIO] Decrypt password reference from JSON string ===
+17:00:23.296 INFO   [c.t.p.crypto.JsonEncryptionService] - === [INICIO] Decrypt encrypted_data to DTO (PasswordReferenceClearData) ===
+17:00:23.296 INFO   [c.t.p.crypto.JsonEncryptionService] - Iniciando decifragem do campo encrypted_data para o DTO: PasswordReferenceClearData
+17:00:23.296 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] Decrypt operation (AES-256-GCM) ===
+17:00:23.297 INFO   [c.t.p.crypto.CryptoService] - Decifragem concluida com sucesso. Tamanho do plaintext: 356 bytes
+17:00:23.298 INFO   [c.t.p.crypto.CryptoService] - [FIM] Decrypt operation (AES-256-GCM) | Tempo total: 1 ms
+17:00:23.298 INFO   [c.t.p.crypto.JsonEncryptionService] - Decifragem concluida. DTO PasswordReferenceClearData reconstruido com sucesso.
+17:00:23.298 INFO   [c.t.p.crypto.JsonEncryptionService] - [FIM] Decrypt encrypted_data to DTO (PasswordReferenceClearData) | Tempo total: 2 ms
+17:00:23.298 INFO   [c.t.p.s.PasswordReferenceService] - Metadados decifrados com sucesso.
+17:00:23.298 INFO   [c.t.p.s.PasswordReferenceService] - [FIM] Decrypt password reference from JSON string | Tempo total: 4 ms
+17:00:23.298 INFO   [c.t.p.s.PasswordReferenceService] - Entidade ID 98 decifrada com sucesso.
+17:00:23.298 INFO   [c.t.p.s.PasswordReferenceService] - [FIM] Decrypt password reference from entity | Tempo total: 4 ms
+17:00:23.298 INFO   [c.t.p.service.BlockchainService] - === [INICIO] T_rec | Retrieve fragments from blockchains ===
+17:00:23.298 INFO   [c.t.p.service.BlockchainService] - Iniciando recuperacao dos fragmentos das blockchains para o ID: ed69dac4-e814-491f-8cc9-241d2f3514a0
+17:00:23.299 INFO   [c.t.p.connector.FabricConnector] - === [INICIO] Connect to Fabric network (org1) ===
+17:00:23.299 INFO   [c.t.p.connector.FabricConnector] - Solicitacao de contrato para a organizacao 'org1' e chaincode 'passwordmanager'.
+17:00:23.692 INFO   [c.t.p.connector.FabricConnector] - Conexao estabelecida com sucesso. Contrato obtido para 'org1'.
+17:00:23.692 INFO   [c.t.p.connector.FabricConnector] - [FIM] Connect to Fabric network (org1) | Tempo total: 393 ms
+17:00:23.692 INFO   [c.t.p.connector.FabricConnector] - === [INICIO] Connect to Fabric network (org2) ===
+17:00:23.692 INFO   [c.t.p.connector.FabricConnector] - Solicitacao de contrato para a organizacao 'org2' e chaincode 'passwordmanager'.
+17:00:24.100 INFO   [c.t.p.connector.FabricConnector] - Conexao estabelecida com sucesso. Contrato obtido para 'org2'.
+17:00:24.100 INFO   [c.t.p.connector.FabricConnector] - [FIM] Connect to Fabric network (org2) | Tempo total: 408 ms
+17:00:24.140 INFO   [c.t.p.service.BlockchainService] - Fragmentos recuperados com sucesso para o ID: ed69dac4-e814-491f-8cc9-241d2f3514a0
+17:00:24.141 INFO   [c.t.p.service.BlockchainService] - [FIM] T_rec | Retrieve fragments from blockchains | Tempo total: 843 ms
+17:00:24.144 INFO   [c.t.p.service.FragmentationService] - === [INICIO] Join password operation ===
+17:00:24.145 INFO   [c.t.p.service.FragmentationService] - Recomposicao concluida. Tamanho final: 122 caracteres.
+17:00:24.145 INFO   [c.t.p.service.FragmentationService] - [FIM] Join password operation | Tempo total: 1 ms
+17:00:24.145 INFO   [c.t.p.crypto.JsonEncryptionService] - === [INICIO] Decrypt encrypted_data to DTO (String) ===
+17:00:24.145 INFO   [c.t.p.crypto.JsonEncryptionService] - Iniciando decifragem do campo encrypted_data para o DTO: String
+17:00:24.145 INFO   [c.t.p.crypto.CryptoService] - === [INICIO] Decrypt operation (AES-256-GCM) ===
+17:00:24.145 INFO   [c.t.p.crypto.CryptoService] - Decifragem concluida com sucesso. Tamanho do plaintext: 14 bytes
+17:00:24.145 INFO   [c.t.p.crypto.CryptoService] - [FIM] Decrypt operation (AES-256-GCM) | Tempo total: 0 ms
+17:00:24.146 INFO   [c.t.p.crypto.JsonEncryptionService] - Decifragem concluida. DTO String reconstruido com sucesso.
+17:00:24.146 INFO   [c.t.p.crypto.JsonEncryptionService] - [FIM] Decrypt encrypted_data to DTO (String) | Tempo total: 1 ms
+17:00:24.146 INFO   [c.t.p.c.PasswordManagerController] - Senha recuperada com sucesso | ID: 98
+17:00:24.146 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Recuperacao Completa da Senha | ID: 98 | Tempo total: 856 ms
+17:00:24.147 INFO   [c.tcc.password_manager.cli.CliRunner] - Senha decifrada com sucesso para credencial ID 98
+17:00:57.686 INFO   [c.t.p.c.PasswordManagerController] - === [INICIO] Logout de Usuario ===
+17:00:57.687 INFO   [c.t.p.session.SessionManager] - === [INICIO] User session logout ===
+17:00:57.688 INFO   [c.t.p.session.SessionManager] - Encerrando sessao do usuario ID: 1
+17:00:57.688 INFO   [c.t.p.session.SessionManager] - Sessao encerrada com sucesso.
+17:00:57.689 INFO   [c.t.p.session.SessionManager] - [FIM] User session logout | Tempo total: 0 ms
+17:00:57.689 INFO   [c.t.p.c.PasswordManagerController] - Logout realizado com sucesso.
+17:00:57.689 INFO   [c.t.p.c.PasswordManagerController] - [FIM] Logout de Usuario | Tempo total: 2 ms
+17:00:57.689 INFO   [c.tcc.password_manager.cli.CliRunner] - Logout executado com sucesso.
+17:00:59.102 INFO   [c.tcc.password_manager.cli.CliRunner] - Encerrando execucao do CLI pelo usuario.
+17:00:59.103 INFO   [c.tcc.password_manager.cli.CliRunner] - CLI encerrada com seguranca.
