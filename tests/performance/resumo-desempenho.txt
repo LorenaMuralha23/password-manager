@@ -1,0 +1,78 @@
+===========================================================
+📘 RESUMO CONSOLIDADO — TESTES DE DESEMPENHO
+===========================================================
+
+🧩 Objetivo geral:
+Mensurar o tempo médio de execução das principais operações do protótipo — criptografia, fragmentação, armazenamento e recuperação — em diferentes cenários de carga, avaliando a estabilidade, a escalabilidade e a eficiência da arquitetura proposta.
+
+Os testes de desempenho complementam as etapas funcionais e de segurança, quantificando o comportamento temporal do sistema e verificando se o aumento do volume de credenciais impacta de forma linear ou degradada o tempo total de operação.
+
+-----------------------------------------------------------
+CT01 — Cenário A: 1 credencial × 10 execuções
+-----------------------------------------------------------
+🧪 Objetivo:
+Avaliar o tempo base do sistema sob carga mínima, medindo o custo real de cada operação sem interferência de múltiplas inserções.
+
+🧭 Resultado:
+- `T_enc`: ~7 ms  
+- `T_frag`: ~10 ms  
+- `T_store`: ~15,1 s  
+- `T_rec`: ~1,7 s  
+- `T_total`: ~17,5 s  
+
+📎 Status: ✅ Sucesso  
+💡 Evidência: `/tests/performance/test-performance-01-scenario-A.log`  
+Observação: Primeira execução mais lenta devido ao aquecimento da JVM (warm-up); estabilidade nas seguintes.
+
+-----------------------------------------------------------
+CT02 — Cenário B: 10 credenciais × 10 execuções
+-----------------------------------------------------------
+🧪 Objetivo:
+Avaliar a escalabilidade do sistema em um uso moderado, observando se os tempos médios de operação mantêm proporcionalidade linear em relação ao aumento de carga.
+
+🧭 Resultado:
+- `T_enc`: ~6 ms  
+- `T_frag`: ~8 ms  
+- `T_store`: ~8,4 s  
+- `T_rec`: ~2,0 s  
+- `T_total`: ~70 s (média global)  
+
+📎 Status: ✅ Sucesso  
+💡 Evidência: `/tests/performance/test-performance-02-scenario-B.log`  
+Observação: Redução progressiva do tempo de conexão com o Fabric após a primeira execução, indicando caching de identidade e sessão.
+
+-----------------------------------------------------------
+CT03 — Cenário C: 50 credenciais × 10 execuções
+-----------------------------------------------------------
+🧪 Objetivo:
+Testar a estabilidade e a escalabilidade do sistema sob carga intensiva, simulando um cenário de uso contínuo e elevado volume de operações distribuídas.
+
+🧭 Resultado:
+- `T_enc`: ~5 ms  
+- `T_frag`: ~9 ms  
+- `T_store`: ~6,5 s  
+- `T_rec`: ~2,3 s  
+- `T_total`: ~370 s (média global)  
+
+📎 Status: ✅ Sucesso  
+💡 Evidência: `/tests/performance/test-performance-03-scenario-C.log`  
+Observação: O tempo de armazenamento cresceu de forma quase linear, confirmando boa escalabilidade e ausência de degradação perceptível.
+
+-----------------------------------------------------------
+📊 Conclusão geral:
+Os três cenários testados (CT01, CT02 e CT03) demonstraram a **estabilidade e previsibilidade temporal do sistema**, com tempos proporcionais ao número de credenciais processadas.
+
+| Dimensão avaliada          | Resultado observado                                    |
+|-----------------------------|--------------------------------------------------------|
+| Criptografia local (T_enc)  | Constante, independente da carga                      |
+| Fragmentação (T_frag)       | Constante, abaixo de 10 ms em média                   |
+| Armazenamento blockchain (T_store) | Dominante no tempo total, porém estável e linear |
+| Recuperação (T_rec)         | Baixa variação (~2 s), desempenho consistente         |
+| Escalabilidade              | Crescimento linear de A → C                           |
+| Estabilidade operacional    | Nenhum erro, timeout ou desconexão                    |
+
+✅ **Conclusão final:**  
+O sistema apresentou desempenho consistente e escalável. Mesmo sob carga intensiva (50 credenciais × 10 execuções), manteve estabilidade e proporcionalidade nos tempos médios, evidenciando a eficiência da arquitetura descentralizada.  
+O componente de **armazenamento distribuído em duas blockchains privadas** é o fator dominante de custo temporal, mas não compromete a responsividade geral — comprovando a viabilidade prática da proposta para cenários reais de uso.
+
+===========================================================
