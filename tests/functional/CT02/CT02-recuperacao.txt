@@ -6,8 +6,7 @@ CASO DE TESTE FUNCIONAL — CT02
 CT02 — Recuperação e Decifragem de Credencial
 
 🧪 Objetivo:
-Validar a capacidade do sistema de recuperar e reconstruir credenciais armazenadas,
-realizando a junção dos fragmentos distribuídos em duas blockchains e a posterior
+Validar a capacidade do sistema de recuperar e reconstruir credenciais armazenadas, realizando a junção dos fragmentos distribuídos em duas blockchains e a posterior
 decifragem com a User Master Key (UMK) derivada da senha mestre do usuário.
 
 ⚙️ Procedimento:
@@ -15,51 +14,45 @@ decifragem com a User Master Key (UMK) derivada da senha mestre do usuário.
 2. Efetuar login:
    - ID: 1
    - Senha mestre: Senha-12345
-3. Listar credenciais existentes:
-   - Resultado esperado: 1 credencial cadastrada (“Facebook”)
-4. Recuperar senha (modo normal):
-   - Opção [6] RECUPERAR SENHA
-   - ID da credencial: 1
-5. Recuperar senha (modo texto claro):
-   - Opção [7] RECUPERAR SENHA (TEXTO CLARO)
-   - ID da credencial: 1
-6. Verificar se a senha exibida corresponde ao valor original: “Senha1-12345”
+3. Listar credenciais existentes para o usuário.
+4. Selecionar uma credencial e executar a recuperação em texto claro:
+   - Operação equivalente à opção da CLI “RECUPERAR SENHA (TEXTO CLARO)”.
+5. Verificar se a senha exibida corresponde ao valor original.
+6. Repetir o processo de recuperação 10 vezes consecutivas para coleta de métricas (1ª execução considerada warm-up).
 7. Encerrar a sessão (logout).
 
 📄 Evidências:
-- Log salvo em: /tests/functional/test-functional-02-recover.log
+- Log salvo em: /tests/functional/test-functional-02-10iter.log
 - Saídas principais observadas:
   - 🔎 Recuperação de metadados e fragmentos (Org1 / Org2)
+  - 🧩 Junção dos fragmentos e reconstrução do ciphertext
   - 🔐 Decifragem AES-256-GCM concluída
-  - 🧩 Junção dos fragmentos (Join operation)
-  - ✅ Senha recuperada com sucesso (texto claro: “Senha1-12345”)
-  - ⏱️ Tempo total de recuperação (T_rec): 7.729 s
-  - ⏱️ Tempo total de decifragem completa (T_total): 1.007 s
+  - ✅ Senha recuperada em texto claro, idêntica ao valor original
+  - ⏱️ Registros de tempo por execução:
+     - 1ª execução (warm-up):
+        - T_rec ≈ 6,085 s
+        - T_total ≈ 6,121 s
+     - Execuções 2–10:
+        - T_rec entre 1,075 s e 1,422 s
+        - T_total entre 1,084 s e 1,435 s
   - Sessão encerrada com segurança
 
 📊 Métricas coletadas:
-| Operação | Tempo (ms/s) | Observações |
+| Operação  | Tempo (ms/s) | Observações |
 |-----------|--------------|-------------|
-| T_rec     | 7.729 s | Recuperação de fragmentos nas blockchains |
-| T_join    | 1 ms | Recombinação dos fragmentos |
-| T_dec     | 2 ms | Decifragem da senha |
-| T_total   | ≈ 1.0 s | Tempo total da operação “texto claro” |
+| T_rec     | 1,23 s       | Recuperação dos fragmentos nas blockchains, junção e decifragem |
+| T_total   | ≈ 1,24 s      | Tempo total da operação de recuperação em texto claro (execuções 2–10) |
 
 ✅ Resultado esperado:
-O sistema deve recuperar os fragmentos das duas blockchains, recompor o ciphertext,
-decifrar a senha original com a UMK e exibir o valor em texto claro. Nenhum erro ou
-dado sensível deve aparecer no log fora do contexto criptográfico.
+O sistema deve recuperar os fragmentos das duas blockchains, recompor o ciphertext, decifrar a senha original com a UMK e exibir o valor em texto claro, sem erro ou exposição indevida de dados sensíveis.
 
 🧾 Resultado obtido:
-Sucesso total — os fragmentos foram localizados, recombinados e decifrados
-corretamente. A senha exibida coincidiu com o valor original (“Senha1-12345”),
-confirmando a integridade da arquitetura dual-blockchain e da chave derivada.
+Sucesso total — os fragmentos foram localizados, recombinados e decifrados corretamente.
+A senha exibida coincidiu com o valor original (“Senha1-12345”), confirmando a integridade do modelo dual-blockchain e da chave derivada.
 
 📘 Conclusão:
-O teste confirmou que o sistema é capaz de reconstruir credenciais completas a partir
-de fragmentos cifrados e isolados, demonstrando a consistência entre as operações
-de armazenamento e recuperação. A integridade dos dados e o tempo de resposta
-foram compatíveis com o modelo proposto.
+O teste comprovou que o sistema reconstrói credenciais de forma íntegra e segura, demonstrando consistência entre armazenamento (CT01) e recuperação (CT02).
+O comportamento observado foi estável e compatível com a arquitetura proposta.
 
 📎 Status final:
 ✅ Sucesso
